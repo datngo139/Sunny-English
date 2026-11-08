@@ -288,7 +288,7 @@ dialog.dlg::backdrop{background:rgba(74,38,16,.45)}
 .js [data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
 .js [data-reveal].in-view{opacity:1;transform:none}
 .js .feature-art:not(.in-view) *{animation-play-state:paused!important}
-.scene *{transform-box:fill-box}
+.s-blob,.s-bob,.k-bob,.k-jump,.s-pop,.s-spark,.s-float,.s-bounce,.s-flag .flag-cloth,.s-row circle,.s-stamp{transform-box:fill-box}
 .s-blob{fill:var(--blob,#FFE9A8);transform-origin:center;animation:s-blob 9s ease-in-out infinite alternate}
 @keyframes s-blob{from{transform:scale(.97) rotate(-1deg)}to{transform:scale(1.03) rotate(1.5deg)}}
 .s-bob{animation:s-bob 3s ease-in-out infinite;transform-origin:center bottom}
@@ -404,9 +404,9 @@ dialog.lightbox::backdrop{background:rgba(30,20,10,.88)}
 
 @media (min-width:761px){.btn.only-mobile{display:none}}
 @media (max-width:760px){
-  .facility{padding:64px 0 72px}
-  .fx{width:calc(var(--w) * .66)}
-  .fx.hide-m,.fx-dot.hide-m{display:none}
+  .facility{padding:78px 0 88px}
+  .fx:not(.mk),.fx-dot{display:none}
+  .fx.mk{left:var(--mx);top:var(--my);width:calc(var(--w) * .62)}
   .fc-call{display:inline-flex}
   .fc,.fc-call{height:48px;min-width:48px}
   .fc-call{width:48px}

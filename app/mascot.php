@@ -56,31 +56,31 @@ function sun_defs(): string
 function mascot_hero(): string
 {
     $L = SUN_LINE;
-    $spark = fn(int $x, int $y, string $delay, string $fill = '#FFC20E') => '<path class="m-spark" style="animation-delay:' . $delay . '" transform="translate(' . $x . ' ' . $y . ')" d="M0 -13 Q2 -2 13 0 Q2 2 0 13 Q-2 2 -13 0 Q-2 -2 0 -13Z" fill="' . $fill . '" stroke="' . $L . '" stroke-width="2.5" stroke-linejoin="round"/>';
-    $heart = fn(int $x, int $y, string $delay) => '<path class="m-spark" style="animation-delay:' . $delay . '" transform="translate(' . $x . ' ' . $y . ') scale(.9)" d="M0 8 C-14 -2 -12 -14 -5 -14 C-1 -14 0 -10 0 -9 C0 -10 1 -14 5 -14 C12 -14 14 -2 0 8Z" fill="#FF6F8E" stroke="' . $L . '" stroke-width="2.5" stroke-linejoin="round"/>';
+    $spark = fn(int $x, int $y, string $delay, string $fill = '#FFC20E') => '<g transform="translate(' . $x . ' ' . $y . ')"><path class="m-spark" style="animation-delay:' . $delay . '" d="M0 -13 Q2 -2 13 0 Q2 2 0 13 Q-2 2 -13 0 Q-2 -2 0 -13Z" fill="' . $fill . '" stroke="' . $L . '" stroke-width="2.5" stroke-linejoin="round"/></g>';
+    $heart = fn(int $x, int $y, string $delay) => '<g transform="translate(' . $x . ' ' . $y . ') scale(1.2)"><path class="m-spark" style="animation-delay:' . $delay . '" d="M0 8 C-14 -2 -12 -14 -5 -14 C-1 -14 0 -10 0 -9 C0 -10 1 -14 5 -14 C12 -14 14 -2 0 8Z" fill="#FF6F8E" stroke="' . $L . '" stroke-width="2.5" stroke-linejoin="round"/></g>';
 
     return '<button type="button" class="mascot" id="mascot" aria-label="Linh vật mặt trời Sunny. Bấm để Sunny chào con">'
-        . '<svg viewBox="0 0 400 420" role="img" aria-hidden="true" focusable="false">'
-        . '<defs><clipPath id="mMouth"><path d="M164 238 Q200 300 236 238 Z"/></clipPath></defs>'
-        . '<ellipse class="m-shadow" cx="200" cy="394" rx="116" ry="12" fill="#4A2610" fill-opacity=".14"/>'
+        . '<svg viewBox="0 0 400 428" role="img" aria-hidden="true" focusable="false">'
+        . '<defs><clipPath id="mMouth"><path d="M160 244 Q200 308 240 244 Z"/></clipPath></defs>'
+        . '<ellipse class="m-shadow" cx="200" cy="402" rx="116" ry="12" fill="#4A2610" fill-opacity=".14"/>'
         . $spark(52, 110, '0s') . $spark(352, 92, '.8s', '#FFE27A') . $heart(40, 262, '1.2s') . $spark(362, 286, '.4s') . $heart(344, 188, '1.6s') . $spark(70, 356, '1s', '#FFE27A')
         . '<g class="m-jump"><g class="m-float"><g class="m-tilt">'
-        . '<g class="m-rays"><g class="m-rays-in">' . sun_rays(9, 200, 205, 90, 76, 50, 18, 7) . '</g></g>'
+        . '<g class="m-rays"><g class="m-rays-in">' . sun_rays(9, 200, 205, 88, 74, 66, 26, 7) . '</g></g>'
         // chân
-        . '<g class="m-foot-l"><ellipse cx="166" cy="312" rx="26" ry="18" fill="#F7931E" stroke="' . $L . '" stroke-width="7"/><path d="M150 308 Q160 300 174 304" stroke="#FFD66B" stroke-width="5" stroke-linecap="round" fill="none"/></g>'
-        . '<g class="m-foot-r"><ellipse cx="234" cy="312" rx="26" ry="18" fill="#F7931E" stroke="' . $L . '" stroke-width="7"/><path d="M218 308 Q228 300 242 304" stroke="#FFD66B" stroke-width="5" stroke-linecap="round" fill="none"/></g>'
+        . '<g class="m-foot-l"><ellipse cx="164" cy="318" rx="30" ry="20" fill="#F7931E" stroke="' . $L . '" stroke-width="7"/><path d="M146 314 Q158 305 174 309" stroke="#FFD66B" stroke-width="5" stroke-linecap="round" fill="none"/></g>'
+        . '<g class="m-foot-r"><ellipse cx="236" cy="318" rx="30" ry="20" fill="#F7931E" stroke="' . $L . '" stroke-width="7"/><path d="M218 309 Q230 305 246 314" stroke="#FFD66B" stroke-width="5" stroke-linecap="round" fill="none"/></g>'
         // thân bóng
         . '<circle cx="200" cy="205" r="102" fill="url(#gSun)" stroke="' . $L . '" stroke-width="8"/>'
         . '<path d="M126 152 Q144 118 188 106" stroke="#fff" stroke-opacity=".8" stroke-width="12" stroke-linecap="round" fill="none"/>'
         . '<circle cx="212" cy="102" r="5" fill="#fff" fill-opacity=".85"/>'
         // mắt
-        . '<g class="m-eye"><g class="m-pupil" data-eye="l"><ellipse cx="160" cy="200" rx="23" ry="29" fill="#2A1D17"/><circle cx="152" cy="190" r="9.5" fill="#fff"/><circle cx="168" cy="212" r="4.5" fill="#fff"/></g></g>'
-        . '<g class="m-eye"><g class="m-pupil" data-eye="r"><ellipse cx="240" cy="200" rx="23" ry="29" fill="#2A1D17"/><circle cx="232" cy="190" r="9.5" fill="#fff"/><circle cx="248" cy="212" r="4.5" fill="#fff"/></g></g>'
-        . '<ellipse cx="124" cy="242" rx="19" ry="12" fill="#FF6F4E" fill-opacity=".72"/><ellipse cx="276" cy="242" rx="19" ry="12" fill="#FF6F4E" fill-opacity=".72"/>'
+        . '<g class="m-eye"><g class="m-pupil" data-eye="l"><ellipse cx="158" cy="200" rx="26" ry="33" fill="#2A1D17"/><circle cx="149" cy="188" r="11" fill="#fff"/><circle cx="168" cy="214" r="5" fill="#fff"/></g></g>'
+        . '<g class="m-eye"><g class="m-pupil" data-eye="r"><ellipse cx="242" cy="200" rx="26" ry="33" fill="#2A1D17"/><circle cx="233" cy="188" r="11" fill="#fff"/><circle cx="252" cy="214" r="5" fill="#fff"/></g></g>'
+        . '<ellipse cx="120" cy="246" rx="20" ry="13" fill="#FF6F4E" fill-opacity=".72"/><ellipse cx="280" cy="246" rx="20" ry="13" fill="#FF6F4E" fill-opacity=".72"/>'
         // miệng
-        . '<g class="m-mouth"><path d="M164 238 Q200 300 236 238 Z" fill="#B3261E"/>'
-        . '<g clip-path="url(#mMouth)"><ellipse cx="200" cy="280" rx="28" ry="17" fill="#FF7C8A"/></g>'
-        . '<path d="M164 238 Q200 300 236 238 Z" fill="none" stroke="' . $L . '" stroke-width="6" stroke-linejoin="round"/></g>'
+        . '<g class="m-mouth"><path d="M160 244 Q200 308 240 244 Z" fill="#B3261E"/>'
+        . '<g clip-path="url(#mMouth)"><ellipse cx="200" cy="288" rx="30" ry="18" fill="#FF7C8A"/></g>'
+        . '<path d="M160 244 Q200 308 240 244 Z" fill="none" stroke="' . $L . '" stroke-width="6" stroke-linejoin="round"/></g>'
         . '</g></g></g>'
         // bóng thoại
         . '<g class="m-bubble" id="mBubble"><path d="M118 82 L104 112 L152 82Z" fill="#fff" stroke="' . $L . '" stroke-width="5" stroke-linejoin="round"/>'
@@ -232,10 +232,10 @@ function scene_svg(string $name): string
                 $ground(250, 340, 190)
                 . $sun(330, 236, 130)
                 . '<g transform="rotate(5 300 190)"><rect x="216" y="48" width="170" height="282" rx="30" fill="#fff" stroke="' . $L . '" stroke-width="6"/>'
-                . '<rect x="232" y="64" width="138" height="38" rx="12" fill="#3BAA4A" stroke="' . $L . '" stroke-width="4"/><text x="301" y="89" text-anchor="middle" font-size="16" font-weight="800" fill="#fff" font-family="Be Vietnam Pro,system-ui,sans-serif">Báo cáo của con</text>'
+                . '<rect x="232" y="64" width="138" height="38" rx="12" fill="#3BAA4A" stroke="' . $L . '" stroke-width="4"/><text x="288" y="89" text-anchor="middle" font-size="17" font-weight="800" fill="#fff" font-family="Be Vietnam Pro,system-ui,sans-serif">Báo cáo</text>'
                 . $row(136, 'd0', 78) . $row(190, 'd1', 70) . $row(244, 'd2', 80)
                 . '<rect x="276" y="282" width="80" height="10" rx="5" fill="#E8E3DC"/>'
-                . '<g transform="translate(352 60)"><g class="s-stamp"><path d="M0 -30 L9 -10 L31 -8 L14 7 L19 29 L0 18 L-19 29 L-14 7 L-31 -8 L-9 -10Z" fill="#FFC20E" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/></g></g></g>'
+                . '<g transform="translate(356 56)"><g class="s-stamp"><path d="M0 -30 L9 -10 L31 -8 L14 7 L19 29 L0 18 L-19 29 L-14 7 L-31 -8 L-9 -10Z" fill="#FFC20E" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/></g></g></g>'
                 . kid(['x' => 104, 'y' => 336, 's' => .95, 'skin' => '#F0B48A', 'hair' => '#2E241B', 'style' => 'bob', 'shirt' => '#7C4DFF', 'pants' => '#2F72A8', 'shoe' => '#D2302A',
                     'al' => [-58, -66], 'ar' => [86, -116], 'cls' => 'k-bob'])
                 . kid(['x' => 178, 'y' => 336, 's' => .56, 'skin' => '#FFD3B0', 'hair' => '#7A3F18', 'style' => 'short', 'shirt' => '#FFC20E', 'pants' => '#3BAA4A', 'shoe' => '#FFFFFF',
@@ -252,41 +252,45 @@ function facility_icons(): string
     $L = SUN_LINE;
     $block = fn(string $ch, string $c, string $d) => '<svg viewBox="0 0 80 80"><rect x="10" y="12" width="60" height="60" rx="14" fill="' . $d . '"/><rect x="4" y="4" width="62" height="62" rx="14" fill="' . $c . '"/><rect x="10" y="9" width="50" height="9" rx="4.5" fill="#fff" fill-opacity=".28"/><text x="35" y="50" text-anchor="middle" font-size="38" font-weight="900" fill="#fff" font-family="Be Vietnam Pro,system-ui,sans-serif">' . $ch . '</text></svg>';
     $icons = [
-        [$block('A', '#2F72A8', '#17446A'), 3, 10, 78, -12, 1.0, 0],
-        [$block('B', '#D2302A', '#8E1F1A'), 91, 62, 72, 14, 0.8, 0],
-        [$block('C', '#3BAA4A', '#1E6A2A'), 7, 70, 68, 10, 0.9, 0],
-        [$block('Z', '#7C4DFF', '#4527A0'), 88, 8, 64, -16, 0.7, 1],
+        [$block('A', '#2F72A8', '#17446A'), 2, 38, 78, -12, 1.0, 0],
+        [$block('B', '#D2302A', '#8E1F1A'), 92, 56, 72, 14, 0.8, 0],
+        [$block('C', '#3BAA4A', '#1E6A2A'), 4, 76, 68, 10, 0.9, 0],
+        [$block('Z', '#7C4DFF', '#4527A0'), 89, 4, 64, -16, 0.7, 1],
         // sách mở
-        ['<svg viewBox="0 0 90 80"><path d="M6 20 Q30 8 45 20 V68 Q30 56 6 68Z" fill="#fff" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><path d="M84 20 Q60 8 45 20 V68 Q60 56 84 68Z" fill="#FFF3C4" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><path d="M14 30 Q28 24 38 30 M14 42 Q28 36 38 42 M52 30 Q62 24 76 30 M52 42 Q62 36 76 42" stroke="#2F72A8" stroke-width="3.5" stroke-linecap="round" fill="none"/></svg>', 80, 20, 84, 8, 0.9, 0],
+        ['<svg viewBox="0 0 90 80"><path d="M6 20 Q30 8 45 20 V68 Q30 56 6 68Z" fill="#fff" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><path d="M84 20 Q60 8 45 20 V68 Q60 56 84 68Z" fill="#FFF3C4" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><path d="M14 30 Q28 24 38 30 M14 42 Q28 36 38 42 M52 30 Q62 24 76 30 M52 42 Q62 36 76 42" stroke="#2F72A8" stroke-width="3.5" stroke-linecap="round" fill="none"/></svg>', 79, 12, 84, 8, 0.9, 0],
         // sao
-        ['<svg viewBox="0 0 80 80"><path d="M40 6 L50 30 L76 32 L56 49 L63 74 L40 60 L17 74 L24 49 L4 32 L30 30Z" fill="#FFC20E" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><path d="M40 16 L46 32" stroke="#fff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round"/></svg>', 12, 38, 56, -8, 1.2, 0],
-        ['<svg viewBox="0 0 80 80"><path d="M40 6 L50 30 L76 32 L56 49 L63 74 L40 60 L17 74 L24 49 L4 32 L30 30Z" fill="#FF6F8E" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/></svg>', 76, 78, 46, 12, 1.3, 1],
+        ['<svg viewBox="0 0 80 80"><path d="M40 6 L50 30 L76 32 L56 49 L63 74 L40 60 L17 74 L24 49 L4 32 L30 30Z" fill="#FFC20E" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><path d="M40 16 L46 32" stroke="#fff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round"/></svg>', 10, 54, 56, -8, 1.2, 0],
+        ['<svg viewBox="0 0 80 80"><path d="M40 6 L50 30 L76 32 L56 49 L63 74 L40 60 L17 74 L24 49 L4 32 L30 30Z" fill="#FF6F8E" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/></svg>', 74, 86, 46, 12, 1.3, 1],
         // bút chì
-        ['<svg viewBox="0 0 90 90"><g transform="rotate(40 45 45)"><rect x="34" y="4" width="22" height="64" rx="4" fill="#FFC20E" stroke="' . $L . '" stroke-width="4"/><path d="M34 68 L45 88 L56 68Z" fill="#F6E6D8" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><path d="M41 80 L45 88 L49 80Z" fill="' . $L . '"/><rect x="34" y="-2" width="22" height="12" rx="4" fill="#FF6F8E" stroke="' . $L . '" stroke-width="4"/></g></svg>', 94, 36, 72, 0, 0.8, 1],
+        ['<svg viewBox="0 0 90 90"><g transform="rotate(40 45 45)"><rect x="34" y="4" width="22" height="64" rx="4" fill="#FFC20E" stroke="' . $L . '" stroke-width="4"/><path d="M34 68 L45 88 L56 68Z" fill="#F6E6D8" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><path d="M41 80 L45 88 L49 80Z" fill="' . $L . '"/><rect x="34" y="-2" width="22" height="12" rx="4" fill="#FF6F8E" stroke="' . $L . '" stroke-width="4"/></g></svg>', 95, 30, 72, 0, 0.8, 1],
         // quả địa cầu
-        ['<svg viewBox="0 0 80 80"><circle cx="40" cy="38" r="30" fill="#4FC3F7" stroke="' . $L . '" stroke-width="4"/><path d="M22 28 Q34 22 38 34 Q30 44 20 40Z M46 20 Q60 22 64 36 Q54 40 48 32Z M40 56 Q52 52 58 60 Q46 66 40 56Z" fill="#3BAA4A" stroke="' . $L . '" stroke-width="2.5" stroke-linejoin="round"/><path d="M26 74 H54" stroke="' . $L . '" stroke-width="5" stroke-linecap="round"/></svg>', 1, 44, 70, 6, 0.7, 1],
+        ['<svg viewBox="0 0 80 80"><circle cx="40" cy="38" r="30" fill="#4FC3F7" stroke="' . $L . '" stroke-width="4"/><path d="M22 28 Q34 22 38 34 Q30 44 20 40Z M46 20 Q60 22 64 36 Q54 40 48 32Z M40 56 Q52 52 58 60 Q46 66 40 56Z" fill="#3BAA4A" stroke="' . $L . '" stroke-width="2.5" stroke-linejoin="round"/><path d="M26 74 H54" stroke="' . $L . '" stroke-width="5" stroke-linecap="round"/></svg>', 1, 20, 70, 6, 0.7, 1],
         // cặp sách
-        ['<svg viewBox="0 0 80 90"><rect x="12" y="20" width="56" height="62" rx="16" fill="#F7931E" stroke="' . $L . '" stroke-width="4"/><path d="M28 20 Q28 6 40 6 Q52 6 52 20" stroke="' . $L . '" stroke-width="4" fill="none"/><rect x="22" y="50" width="36" height="22" rx="8" fill="#FFC20E" stroke="' . $L . '" stroke-width="4"/><path d="M26 38 H54" stroke="' . $L . '" stroke-width="4" stroke-linecap="round"/></svg>', 18, 90, 70, -6, 1.0, 0],
+        ['<svg viewBox="0 0 80 90"><rect x="12" y="20" width="56" height="62" rx="16" fill="#F7931E" stroke="' . $L . '" stroke-width="4"/><path d="M28 20 Q28 6 40 6 Q52 6 52 20" stroke="' . $L . '" stroke-width="4" fill="none"/><rect x="22" y="50" width="36" height="22" rx="8" fill="#FFC20E" stroke="' . $L . '" stroke-width="4"/><path d="M26 38 H54" stroke="' . $L . '" stroke-width="4" stroke-linecap="round"/></svg>', 17, 90, 70, -6, 1.0, 0],
         // mũ cử nhân
         ['<svg viewBox="0 0 90 70"><path d="M20 34 V52 Q45 66 70 52 V34 Q45 48 20 34Z" fill="#C0621F" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><path d="M4 28 L45 8 L86 28 L45 48Z" fill="#D8742D" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><path d="M78 32 V56" stroke="' . $L . '" stroke-width="4" stroke-linecap="round"/><circle cx="78" cy="58" r="5" fill="#FFC20E" stroke="' . $L . '" stroke-width="3"/></svg>', 86, 88, 86, 10, 0.9, 0],
         // huy chương
-        ['<svg viewBox="0 0 70 90"><path d="M18 4 L35 34 L52 4Z" fill="#D2302A" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><circle cx="35" cy="56" r="22" fill="#FFC20E" stroke="' . $L . '" stroke-width="4"/><path d="M35 44 l4 9 10 1 -7.5 6.5 2.5 9.5 -9 -5.5 -9 5.5 2.5 -9.5 -7.5 -6.5 10 -1Z" fill="#fff" stroke="' . $L . '" stroke-width="2.5" stroke-linejoin="round"/></svg>', 63, 6, 60, -10, 1.1, 1],
+        ['<svg viewBox="0 0 70 90"><path d="M18 4 L35 34 L52 4Z" fill="#D2302A" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><circle cx="35" cy="56" r="22" fill="#FFC20E" stroke="' . $L . '" stroke-width="4"/><path d="M35 44 l4 9 10 1 -7.5 6.5 2.5 9.5 -9 -5.5 -9 5.5 2.5 -9.5 -7.5 -6.5 10 -1Z" fill="#fff" stroke="' . $L . '" stroke-width="2.5" stroke-linejoin="round"/></svg>', 63, 5, 60, -10, 1.1, 1],
         // bóng bay
-        ['<svg viewBox="0 0 60 100"><path d="M30 70 Q22 84 32 98" stroke="#6B5E52" stroke-width="3" fill="none"/><ellipse cx="30" cy="34" rx="24" ry="30" fill="#7C4DFF" stroke="' . $L . '" stroke-width="4"/><path d="M30 64 l-5 8 h10Z" fill="#7C4DFF" stroke="' . $L . '" stroke-width="3" stroke-linejoin="round"/><path d="M16 22 Q18 12 28 9" stroke="#fff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round" fill="none"/></svg>', 24, 6, 52, 8, 1.2, 1],
+        ['<svg viewBox="0 0 60 100"><path d="M30 70 Q22 84 32 98" stroke="#6B5E52" stroke-width="3" fill="none"/><ellipse cx="30" cy="34" rx="24" ry="30" fill="#7C4DFF" stroke="' . $L . '" stroke-width="4"/><path d="M30 64 l-5 8 h10Z" fill="#7C4DFF" stroke="' . $L . '" stroke-width="3" stroke-linejoin="round"/><path d="M16 22 Q18 12 28 9" stroke="#fff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round" fill="none"/></svg>', 24, 4, 52, 8, 1.2, 1],
         // nốt nhạc
-        ['<svg viewBox="0 0 60 80"><ellipse cx="18" cy="62" rx="14" ry="11" fill="#3BAA4A" stroke="' . $L . '" stroke-width="4"/><path d="M30 62 V12 Q50 18 52 38" stroke="' . $L . '" stroke-width="6" stroke-linecap="round" fill="none"/></svg>', 70, 90, 52, -8, 1.0, 1],
+        ['<svg viewBox="0 0 60 80"><ellipse cx="18" cy="62" rx="14" ry="11" fill="#3BAA4A" stroke="' . $L . '" stroke-width="4"/><path d="M30 62 V12 Q50 18 52 38" stroke="' . $L . '" stroke-width="6" stroke-linecap="round" fill="none"/></svg>', 70, 92, 52, -8, 1.0, 1],
         // tai nghe
         ['<svg viewBox="0 0 90 80"><path d="M14 50 V40 Q14 10 45 10 Q76 10 76 40 V50" stroke="' . $L . '" stroke-width="7" fill="none" stroke-linecap="round"/><rect x="6" y="44" width="22" height="30" rx="9" fill="#D2302A" stroke="' . $L . '" stroke-width="4"/><rect x="62" y="44" width="22" height="30" rx="9" fill="#D2302A" stroke="' . $L . '" stroke-width="4"/></svg>', 40, 94, 70, -4, 0.8, 1],
         // cúp
-        ['<svg viewBox="0 0 80 90"><path d="M20 8 H60 V30 Q60 52 40 56 Q20 52 20 30Z" fill="#FFC20E" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><path d="M20 14 Q4 14 6 30 Q8 42 22 42 M60 14 Q76 14 74 30 Q72 42 58 42" stroke="' . $L . '" stroke-width="4" fill="none" stroke-linecap="round"/><rect x="34" y="56" width="12" height="14" fill="#E08A0C" stroke="' . $L . '" stroke-width="4"/><rect x="22" y="70" width="36" height="12" rx="5" fill="#FFC20E" stroke="' . $L . '" stroke-width="4"/></svg>', 52, 4, 62, 6, 0.9, 1],
+        ['<svg viewBox="0 0 80 90"><path d="M20 8 H60 V30 Q60 52 40 56 Q20 52 20 30Z" fill="#FFC20E" stroke="' . $L . '" stroke-width="4" stroke-linejoin="round"/><path d="M20 14 Q4 14 6 30 Q8 42 22 42 M60 14 Q76 14 74 30 Q72 42 58 42" stroke="' . $L . '" stroke-width="4" fill="none" stroke-linecap="round"/><rect x="34" y="56" width="12" height="14" fill="#E08A0C" stroke="' . $L . '" stroke-width="4"/><rect x="22" y="70" width="36" height="12" rx="5" fill="#FFC20E" stroke="' . $L . '" stroke-width="4"/></svg>', 52, 3, 62, 6, 0.9, 1],
     ];
     $dots = [[10, 22, 14, '#fff'], [30, 52, 10, '#FFC20E'], [66, 40, 12, '#fff'], [92, 24, 10, '#FF6F8E'], [46, 14, 8, '#7C4DFF'], [20, 56, 9, '#3BAA4A'], [84, 48, 14, '#fff'], [58, 96, 10, '#FFC20E']];
+    // Trên điện thoại chỉ giữ 6 icon, xếp thành hai hàng phía trên và phía dưới khối chữ + ảnh (vị trí: trái, trên).
+    $mobile = [0 => ['6%', '10px'], 15 => ['42%', '4px'], 3 => ['76%', '8px'], 2 => ['6%', 'calc(100% - 66px)'], 5 => ['44%', 'calc(100% - 54px)'], 1 => ['76%', 'calc(100% - 66px)']];
     $out = '<div class="fx-layer" aria-hidden="true">';
     foreach ($icons as $i => [$svg, $x, $y, $w, $r, $z, $hide]) {
-        $out .= '<span class="fx' . ($hide ? ' hide-m' : '') . '" style="--x:' . $x . '%;--y:' . $y . '%;--w:' . $w . 'px;--r:' . $r . 'deg;--z:' . $z . ';--d:-' . round($i * 0.8, 1) . 's;--t:' . (5 + ($i % 4)) . 's">' . $svg . '</span>';
+        $mk = isset($mobile[$i]) ? ' mk" data-m="1' : '';
+        $mv = isset($mobile[$i]) ? ';--mx:' . $mobile[$i][0] . ';--my:' . $mobile[$i][1] : '';
+        $out .= '<span class="fx' . $mk . '" style="--x:' . $x . '%;--y:' . $y . '%;--w:' . $w . 'px;--r:' . $r . 'deg;--z:' . $z . ';--d:-' . round($i * 0.8, 1) . 's;--t:' . (5 + ($i % 4)) . 's' . $mv . '">' . $svg . '</span>';
     }
     foreach ($dots as $i => [$x, $y, $d, $c]) {
-        $out .= '<span class="fx-dot' . ($i % 2 ? ' hide-m' : '') . '" style="--x:' . $x . '%;--y:' . $y . '%;--w:' . $d . 'px;--c:' . $c . ';--d:-' . ($i * 0.6) . 's"></span>';
+        $out .= '<span class="fx-dot" style="--x:' . $x . '%;--y:' . $y . '%;--w:' . $d . 'px;--c:' . $c . ';--d:-' . ($i * 0.6) . 's"></span>';
     }
     return $out . '</div>';
 }
