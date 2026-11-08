@@ -1,6 +1,6 @@
-# Ảnh do admin tải lên. Tuyệt đối không chạy mã trong thư mục này.
-Options -Indexes -ExecCGI
-<FilesMatch "\.(?i:php|phtml|phar|php[0-9]|pl|py|cgi|sh|htaccess)$">
+# Ảnh do admin tải lên. Không cho chạy mã PHP trong thư mục này.
+# (Bản tối giản để chạy được trên cả hosting miễn phí lẫn Hostinger.)
+<FilesMatch "\.(php|phtml|phar|php[0-9])$">
 <IfModule mod_authz_core.c>
 Require all denied
 </IfModule>
@@ -9,7 +9,3 @@ Order allow,deny
 Deny from all
 </IfModule>
 </FilesMatch>
-<IfModule mod_headers.c>
-Header set X-Content-Type-Options "nosniff"
-Header set Content-Security-Policy "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox"
-</IfModule>

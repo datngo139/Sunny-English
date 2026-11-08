@@ -132,14 +132,14 @@ admin_head($post ? 'Sửa bài viết' : 'Viết bài mới', 'posts', $admin);
           <button type="button" data-cmd="formatBlock" data-val="blockquote" title="Trích dẫn"><?= icon('quote') ?></button>
           <span class="sep"></span>
           <button type="button" data-act="link" title="Chèn liên kết"><?= icon('link') ?></button>
-          <button type="button" data-act="image" title="Chèn ảnh"><?= icon('image-plus') ?></button>
+          <button type="button" data-act="image" title="Chèn ảnh (chọn được nhiều ảnh một lúc)"><?= icon('image-plus') ?></button>
           <button type="button" data-cmd="insertHorizontalRule" title="Đường kẻ ngang"><?= icon('minus') ?></button>
           <button type="button" data-cmd="removeFormat" title="Xoá định dạng"><?= icon('remove-formatting') ?></button>
         </div>
         <div class="editable prose" id="editor" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="body-label" spellcheck="true"><?= $form['body'] /* đã lọc bằng sanitize_html() */ ?></div>
       </div>
-      <input type="file" id="img-input" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
-      <span class="hint" id="editor-hint">Dán nội dung sẽ được giữ ở dạng chữ thường. Dùng các nút phía trên để định dạng, chèn ảnh và liên kết.</span>
+      <input type="file" id="img-input" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden>
+      <span class="hint" id="editor-hint">Chèn ảnh: bấm nút ảnh để chọn nhiều ảnh một lúc, hoặc kéo ảnh thả thẳng vào bài (từ 2 ảnh trở lên sẽ xếp thành lưới). Chữ dán vào được giữ ở dạng chữ thường.</span>
     </div>
   </div>
 

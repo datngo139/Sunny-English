@@ -5,7 +5,7 @@
  */
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $root = $_SERVER['DOCUMENT_ROOT'];
-if (preg_match('#^/(app|data|\.git)(/|$)#', $uri) || preg_match('#/\.#', $uri) && !str_contains($uri,'.well-known')) { http_response_code(404); echo "blocked"; return true; }
+if (preg_match('#^/(app|data|dev|\.git)(/|$)#', $uri) || preg_match('#/\.#', $uri) && !str_contains($uri,'.well-known')) { http_response_code(404); echo "blocked"; return true; }
 if (preg_match('#\.(sqlite|sqlite-wal|sqlite-shm|log|md)$#', $uri)) { http_response_code(404); echo "blocked"; return true; }
 if ($uri === '/bai-viet' || $uri === '/bai-viet/') { require $root.'/blog.php'; return true; }
 if (preg_match('#^/bai-viet/([a-z0-9-]+)/?$#', $uri, $m)) { $_GET['slug']=$m[1]; require $root.'/post.php'; return true; }

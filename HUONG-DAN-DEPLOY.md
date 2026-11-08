@@ -49,7 +49,7 @@ Vì `config.php` không có trên GitHub nên phải tạo trên hosting:
    - `site_url`: địa chỉ thật, ví dụ `https://tenmiencuaban.com` (không có dấu `/` cuối).
    - `setup_code`: **đổi thành chuỗi bí mật của riêng bạn** (dài, khó đoán, ví dụ `Sunny-8f3k2-xQ9m-2026`). Không dùng lại chuỗi mẫu, nếu không trang cài đặt sẽ không mở.
    - `contact`: số điện thoại, Zalo, địa chỉ, và link Google Maps chính xác của trung tâm.
-   - `notify_email` (tuỳ chọn): email nhận thông báo khi có phụ huynh đăng ký. `from_email`: một email cùng tên miền (tạo ở hPanel → Emails) để thư không vào spam.
+   - Email thông báo đăng ký mới: xem mục **"Thông báo đăng ký qua Gmail"** bên dưới (làm sau khi đã vào được admin).
    - Giữ `'debug' => false`.
 4. Lưu lại.
 
@@ -75,10 +75,24 @@ Sau đó tự thử một lần: điền form đăng ký học thử trên trang
 
 ---
 
+## Thông báo đăng ký qua Gmail
+
+Mỗi khi có phụ huynh đăng ký, website gửi email báo cho trung tâm. Cần 2 phần:
+
+**1. Gmail dùng để gửi** (nên là một Gmail riêng cho website)
+1. Vào <https://myaccount.google.com/security> bật **Xác minh 2 bước**.
+2. Vào <https://myaccount.google.com/apppasswords>, tạo mật khẩu ứng dụng tên "Sunny website" → được chuỗi **16 ký tự**.
+3. Mở `app/config.php` trên hosting (File Manager → Edit), bỏ dấu `//` ở khối `'smtp'` và điền:
+   `user` = địa chỉ Gmail gửi, `pass` = chuỗi 16 ký tự vừa tạo. Giữ nguyên `host`, `port`, `secure`. **Không gửi chuỗi này cho ai**, và không đưa lên GitHub (file `config.php` đã được loại khỏi Git).
+
+**2. Gmail nhận thông báo**
+- Vào **Admin → Thông báo**, nhập một hoặc nhiều địa chỉ (mỗi dòng một địa chỉ) → **Lưu danh sách**.
+- Bấm **Gửi email thử** để kiểm tra. Nếu báo lỗi, đọc thông báo: thường là sai mật khẩu ứng dụng, hoặc hosting chặn cổng gửi thư (hosting miễn phí hay chặn → dùng hosting trả phí như Hostinger).
+
 ## Cập nhật website sau này
 
 - **Sửa nội dung khoá học / giao diện:** sửa file trên máy → `git add . && git commit -m "..." && git push` → trong hPanel → Git → **Deploy** (hoặc tự động nếu đã bật auto deployment).
-- **Viết bài, xem đăng ký:** làm thẳng trong trang `/admin`, **không** cần đụng GitHub.
+- **Viết bài, sửa khoá học, đặt lịch học thử, xem đăng ký:** làm thẳng trong trang `/admin`, **không** cần đụng GitHub.
 - Dữ liệu thật (`config.php`, `data/`, `uploads/`) không nằm trong Git nên **không bị ghi đè** khi deploy.
 
 ## Sao lưu
@@ -100,4 +114,5 @@ Hostinger cũng có sao lưu tự động hằng ngày/tuần (hPanel → **File
 | Không tải được ảnh lên | Kiểm tra thư mục `uploads/` cho phép ghi (quyền 755) và ảnh ≤ 6MB. |
 | Đường dẫn `/bai-viet` báo 404 | `.htaccess` chưa được tải lên (file ẩn). Bật "Show hidden files" trong File Manager. |
 | Quên mật khẩu admin | Trong File Manager, tạo một file trống tên `reset-admin.txt` trong thư mục `public_html/data/`, rồi mở `/admin/setup.php`, nhập mã cài đặt và tạo tài khoản mới (bài viết và đăng ký được giữ nguyên, file cờ tự xoá sau khi xong). |
-| Email thông báo không đến | Điền `from_email` là địa chỉ cùng tên miền; xem cả thư mục Spam. Đăng ký vẫn được lưu và xem được trong admin. |
+| Email thông báo không đến | Vào **Admin → Thông báo → Gửi email thử** để xem lỗi cụ thể; xem cả thư mục Spam. Chi tiết lỗi gửi thư cũng ghi trong `data/mail-error.log`. Đăng ký vẫn được lưu và xem được trong admin. |
+| Ảnh tải lên bị lỗi 500 / không hiện | Thư mục `uploads/` có file `.htaccess` mà hosting không chấp nhận. Dùng bản `.htaccess` tối giản mới trong dự án; nếu vẫn lỗi, đổi tên `uploads/.htaccess` thành `.htaccess.bak`. |

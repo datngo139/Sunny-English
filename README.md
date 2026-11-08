@@ -2,9 +2,9 @@
 
 Landing page quảng cáo trung tâm ngoại ngữ **Sunny** (bé 3–14 tuổi), gồm:
 
-- **Trang chủ** dựng theo *Sunny Education Design System*: hero, giới thiệu 4 khoá học (lọc theo độ tuổi, bấm xem lộ trình), quy trình học thử, bài viết mới, **form đăng ký học thử**.
+- **Trang chủ** dựng theo *Sunny Education Design System*: **linh vật mặt trời có hoạt hình** (mắt nhìn theo chuột, bấm để chào), 4 cảnh minh hoạ động, khoá học, **băng chuyền ảnh cơ sở vật chất** tự chạy, quy trình học thử, bài viết mới và **form đăng ký học thử có chọn ngày giờ**. Nút Zalo / gọi điện nổi bật, có nút Zalo nổi.
 - **Blog** (`/bai-viet`): admin đăng bài, khách đọc, có ảnh bìa, tóm tắt, SEO/OG, sitemap.
-- **Trang quản trị** (`/admin`): trình soạn bài (đậm/nghiêng, tiêu đề, danh sách, liên kết, ảnh), nháp / đăng / hẹn giờ, xem danh sách phụ huynh đăng ký, đổi trạng thái, xuất CSV (Excel).
+- **Trang quản trị** (`/admin`): soạn bài (đậm/nghiêng, tiêu đề, danh sách, liên kết, **nhiều ảnh một lúc, kéo thả, lưới ảnh**), nháp / đăng / hẹn giờ; **quản lý khoá học** (sửa, thêm, ẩn, sắp xếp, đổi ảnh); **lịch học thử** (ngày giờ nhận, số bé mỗi suất, ngày nghỉ); danh sách phụ huynh đăng ký (đổi trạng thái, xuất CSV); **thông báo đăng ký mới qua Gmail**.
 
 Công nghệ: **PHP 8.1+ và SQLite** (không cần cài database riêng, chạy được trên mọi gói Hostinger). Không cần build, không cần Node.
 
@@ -15,10 +15,11 @@ Công nghệ: **PHP 8.1+ và SQLite** (không cần cài database riêng, chạy
 ```
 index.php, blog.php, post.php     Trang công khai (trang chủ, danh sách bài, bài chi tiết)
 api/register.php                  Nhận đăng ký học thử
-admin/                            Khu quản trị (đăng nhập, bài viết, đăng ký, tải ảnh, mật khẩu)
+admin/                            Khu quản trị (bài viết, khoá học, lịch học thử, đăng ký, thông báo, mật khẩu)
 app/                              Mã lõi (CSDL, bảo mật, lọc HTML, giao diện chung) — bị chặn truy cập từ web
   config.sample.php               Mẫu cấu hình → sao chép thành config.php (KHÔNG đưa lên GitHub)
-  content.php                     ✏️ Nội dung trang chủ: khoá học, lợi ích, khung giờ học thử
+  content.php                     ✏️ Nội dung trang chủ: 4 lý do chọn Sunny, các bước học thử, danh sách ảnh cơ sở vật chất
+  mascot.php, mailer.php, schedule.php   Linh vật + cảnh động (SVG), gửi email Gmail, lịch học thử
 assets/                           CSS (design tokens + component), JS, logo
 data/                             CSDL SQLite + session — tự tạo, bị chặn truy cập, không lên GitHub
 uploads/                          Ảnh admin tải lên — không lên GitHub, không cho chạy mã
@@ -40,12 +41,15 @@ Mở <http://localhost:8000>, vào <http://localhost:8000/admin/> để tạo t�
 
 | Muốn đổi | Sửa ở |
 |---|---|
-| Khoá học, lợi ích, các bước học thử, khung giờ | `app/content.php` |
+| Khoá học (tên, độ tuổi, ảnh…) | **Admin → Khoá học** (không cần sửa code) |
+| Lịch nhận học thử, ngày nghỉ | **Admin → Lịch học thử** |
+| Email nhận thông báo | **Admin → Thông báo** |
+| 4 lý do chọn Sunny, các bước học thử, ảnh cơ sở vật chất | `app/content.php` (ảnh để trong `assets/img/facility/`) |
 | Số điện thoại, Zalo, địa chỉ, link Google Maps | `app/config.php` → `contact` |
 | Màu, font, bo góc | `assets/css/tokens.css` |
 | Logo | `assets/img/` |
 
-> ⚠️ Toàn bộ chữ trong `content.php` (sĩ số lớp 12, lịch học, mốc Cambridge…) là **nội dung mẫu** theo design system. Hãy thay bằng thông tin thật của Sunny trước khi chạy quảng cáo.
+> ⚠️ Chữ như "sĩ số lớp 12", "mốc Cambridge" trong `content.php` và 4 khoá học mẫu là **nội dung mẫu** theo design system. Hãy thay bằng thông tin thật của Sunny trước khi chạy quảng cáo.
 
 ## Bảo mật (đã làm sẵn)
 

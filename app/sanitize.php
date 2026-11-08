@@ -97,6 +97,13 @@ function sanitize_children(DOMNode $parent, DOMDocument $doc): void
             if (preg_match('#^https?://#i', $href)) {
                 $keep['target'] = '_blank';
             }
+        } elseif ($tag === 'figure') {
+            // Chỉ giữ các lớp "lưới ảnh" do trình soạn bài tạo ra (gallery, gallery-2, gallery-3); mọi class khác bị bỏ.
+            $tokens = preg_split('/\s+/', trim($node->getAttribute('class')), -1, PREG_SPLIT_NO_EMPTY);
+            $ok = array_values(array_intersect($tokens, ['gallery', 'gallery-2', 'gallery-3']));
+            if ($ok) {
+                $keep['class'] = implode(' ', $ok);
+            }
         } elseif ($tag === 'img') {
             $src = sanitize_url($node->getAttribute('src'), true);
             if ($src === '') {

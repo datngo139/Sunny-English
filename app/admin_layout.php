@@ -37,7 +37,10 @@ function admin_head(string $title, string $active = '', ?array $admin = null): v
     </a>
     <nav class="adm-nav" aria-label="Menu quản trị">
       <a href="<?= e(url('/admin/')) ?>"<?= $active === 'posts' ? ' aria-current="page"' : '' ?>><?= icon('newspaper') ?>Bài viết</a>
-      <a href="<?= e(url('/admin/dang-ky.php')) ?>"<?= $active === 'regs' ? ' aria-current="page"' : '' ?>><?= icon('users') ?>Đăng ký học thử<?php if ($newCount): ?><span class="dot"><?= $newCount ?></span><?php endif; ?></a>
+      <a href="<?= e(url('/admin/khoa-hoc.php')) ?>"<?= $active === 'courses' ? ' aria-current="page"' : '' ?>><?= icon('graduation-cap') ?>Khoá học</a>
+      <a href="<?= e(url('/admin/lich.php')) ?>"<?= $active === 'schedule' ? ' aria-current="page"' : '' ?>><?= icon('calendar-days') ?>Lịch học thử</a>
+      <a href="<?= e(url('/admin/dang-ky.php')) ?>"<?= $active === 'regs' ? ' aria-current="page"' : '' ?>><?= icon('users') ?>Đăng ký<?php if ($newCount): ?><span class="dot"><?= $newCount ?></span><?php endif; ?></a>
+      <a href="<?= e(url('/admin/thong-bao.php')) ?>"<?= $active === 'notify' ? ' aria-current="page"' : '' ?>><?= icon('bell') ?>Thông báo</a>
       <a href="<?= e(url('/admin/mat-khau.php')) ?>"<?= $active === 'pw' ? ' aria-current="page"' : '' ?>><?= icon('key-round') ?>Mật khẩu</a>
       <a href="<?= e(url('/')) ?>" target="_blank" rel="noopener"><?= icon('external-link') ?>Xem website</a>
     </nav>

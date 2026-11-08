@@ -3,16 +3,19 @@ declare(strict_types=1);
 require __DIR__ . '/app/bootstrap.php';
 
 $courses = sunny_courses();
-$filters = sunny_age_filters();
-$slots = sunny_slots();
+$facility = sunny_facility();
 $posts = published_posts(3);
-$c = sunny_contact();
+$schedule = schedule_available();
+
+/** "Tiếng Anh Mầm Non" → "Mầm Non" cho thanh khoá học gọn trên một hàng. */
+$short = fn(string $t) => trim(preg_replace('/^Tiếng Anh\s+/u', '', $t));
 
 site_head([
     'title' => 'Sunny — Con tự tin nói tiếng Anh | Học thử miễn phí cho bé 3–14 tuổi',
     'path' => '/',
 ]);
 site_header();
+echo sun_defs();
 ?>
 <main id="noi-dung">
 
@@ -20,7 +23,7 @@ site_header();
   <section class="hero" id="trang-chu">
     <div class="hero-main">
       <div class="hero-art">
-        <img src="<?= e(asset('/assets/img/sunny-logo-full.png')) ?>" alt="Sunny Education" width="400" height="434">
+        <?= mascot_hero() ?>
       </div>
       <div class="hero-copy">
         <h1>Con nhút nhát, ngại nói tiếng Anh?</h1>
@@ -34,23 +37,25 @@ site_header();
         </div>
       </div>
     </div>
+    <?php if ($courses): ?>
     <nav class="course-strip" aria-label="Các khoá học">
       <div class="in">
         <?php foreach ($courses as $co): ?>
           <a href="#khoa-hoc" class="lv-<?= e($co['level']) ?>" data-strip-course="<?= e($co['id']) ?>">
-            <span class="strip-ico"><?= icon($co['icon']) ?></span><?= e($co['title']) ?>
+            <span class="strip-ico"><?= icon($co['icon']) ?></span><?= e($short($co['title'])) ?>
           </a>
         <?php endforeach; ?>
       </div>
     </nav>
+    <?php endif; ?>
   </section>
 
   <!-- VỀ SUNNY -->
   <section id="ve-sunny" class="container" style="padding-top:40px;padding-bottom:40px">
     <?php foreach (sunny_why() as $i => $w): ?>
       <div class="feature<?= $i % 2 === 0 ? ' flip' : '' ?>">
-        <div class="feature-art tint-<?= e($w['tint']) ?>"><span class="ico"><?= icon($w['icon']) ?></span></div>
-        <div>
+        <div class="feature-art tint-<?= e($w['tint']) ?>" data-reveal><?= scene_svg($w['scene']) ?></div>
+        <div class="feature-copy" data-reveal>
           <h2><?= e($w['title']) ?></h2>
           <p><?= e($w['body']) ?></p>
         </div>
@@ -59,28 +64,62 @@ site_header();
   </section>
 
   <!-- KHOÁ HỌC -->
+  <?php if ($courses): ?>
   <section id="khoa-hoc" class="section section-soft">
     <div class="container">
       <div class="section-head">
         <h2>Con đang ở độ tuổi nào?</h2>
-        <div class="tabs" role="tablist" aria-label="Lọc theo độ tuổi" id="age-tabs">
-          <?php $first = true; foreach ($filters as $label => $key): ?>
-            <button class="tab" type="button" role="tab" aria-selected="<?= $first ? 'true' : 'false' ?>" data-filter="<?= e((string) $key) ?>"><?= e($label) ?></button>
-          <?php $first = false; endforeach; ?>
-        </div>
       </div>
       <div class="course-grid" id="course-grid">
-        <?php foreach ($courses as $co): ?>
-          <button type="button" class="course-card lv-<?= e($co['level']) ?>" data-course="<?= e($co['id']) ?>" aria-haspopup="dialog">
-            <span class="cc-top"><?= icon($co['icon']) ?><span class="cc-tag"><?= e(preg_replace('/^Tiếng Anh /u', '', $co['title'])) ?></span></span>
+        <?php foreach ($courses as $co): $hasDetail = $co['headline'] !== ''; ?>
+          <button type="button" class="course-card lv-<?= e($co['level']) ?>" data-course="<?= e($co['id']) ?>"<?= $hasDetail ? ' aria-haspopup="dialog"' : '' ?>>
+            <span class="cc-top<?= $co['image'] !== '' ? ' has-img' : '' ?>">
+              <?php if ($co['image'] !== ''): ?>
+                <img src="<?= e(url($co['image'])) ?>" alt="" loading="lazy">
+              <?php else: ?>
+                <?= icon($co['icon']) ?>
+              <?php endif; ?>
+              <span class="cc-tag"><?= e($short($co['title'])) ?></span>
+            </span>
             <span class="cc-body">
-              <span class="cc-ages"><?= e($co['ages']) ?></span>
+              <?php if ($co['ages'] !== ''): ?><span class="cc-ages"><?= e($co['ages']) ?></span><?php endif; ?>
               <span class="cc-title"><?= e($co['title']) ?></span>
               <span class="cc-desc"><?= e($co['desc']) ?></span>
-              <span class="cc-cta">Xem lộ trình cho con →</span>
+              <span class="cc-cta"><?= $hasDetail ? 'Xem lộ trình cho con' : 'Đặt lịch học thử cho con' ?> →</span>
             </span>
           </button>
         <?php endforeach; ?>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
+  <!-- CƠ SỞ VẬT CHẤT -->
+  <section id="co-so" class="section" aria-labelledby="h-coso">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:12px">
+        <div>
+          <span class="overline">Cơ sở vật chất</span>
+          <h2 id="h-coso">Nơi con muốn đến lớp mỗi ngày</h2>
+        </div>
+      </div>
+      <p class="section-lead">Không gian sáng, sạch, ngập sắc cam của Sunny: có khu chờ cho ba mẹ, phòng học cho bé nhỏ với thảm chữ cái và phòng học lớp lớn rộng rãi.</p>
+      <div class="carousel" id="facility" role="region" aria-roledescription="băng chuyền ảnh" aria-label="Ảnh cơ sở vật chất của Sunny">
+        <div class="car-track" id="facility-track" tabindex="0">
+          <?php foreach ($facility as $i => $f): ?>
+            <figure class="car-slide" aria-roledescription="ảnh" aria-label="<?= $i + 1 ?> trên <?= count($facility) ?>">
+              <img src="<?= e(asset('/assets/img/facility/' . $f['file'])) ?>" alt="<?= e($f['caption']) ?>" style="object-position:<?= e($f['pos']) ?>"<?= $i > 0 ? ' loading="lazy"' : '' ?> width="1100" height="733">
+              <figcaption><?= e($f['caption']) ?></figcaption>
+            </figure>
+          <?php endforeach; ?>
+        </div>
+        <button class="car-btn prev" type="button" aria-label="Ảnh trước"><?= icon('chevron-left') ?></button>
+        <button class="car-btn next" type="button" aria-label="Ảnh sau"><?= icon('chevron-right') ?></button>
+        <div class="car-dots" role="tablist" aria-label="Chọn ảnh">
+          <?php foreach ($facility as $i => $f): ?>
+            <button type="button" role="tab" aria-label="Ảnh <?= $i + 1 ?>" aria-selected="<?= $i === 0 ? 'true' : 'false' ?>"></button>
+          <?php endforeach; ?>
+        </div>
       </div>
     </div>
   </section>
@@ -117,7 +156,7 @@ site_header();
     <div class="reg-wrap" style="padding:0 20px">
       <div class="reg-head">
         <h2>Đăng ký test trình độ miễn phí cho con</h2>
-        <p>Sunny gọi lại trong 24 giờ để hẹn giờ test cho con.</p>
+        <p>Chọn ngày giờ phù hợp, Sunny gọi xác nhận trong 24 giờ.</p>
       </div>
       <div class="progress" aria-hidden="true"><i id="reg-progress"></i></div>
       <form class="card" id="reg-form" action="<?= e(url('/api/register.php')) ?>" method="post" novalidate style="padding:28px">
@@ -157,20 +196,24 @@ site_header();
               <select id="f-course" name="course">
                 <option value="">Chưa biết, nhờ Sunny tư vấn</option>
                 <?php foreach ($courses as $co): ?>
-                  <option value="<?= e($co['id']) ?>"><?= e($co['title']) ?> (<?= e($co['ages']) ?>)</option>
+                  <option value="<?= e($co['id']) ?>"><?= e($co['title']) ?><?= $co['ages'] !== '' ? ' (' . e($co['ages']) . ')' : '' ?></option>
                 <?php endforeach; ?>
               </select>
             </span>
             <span class="error-text"></span>
           </div>
 
-          <fieldset style="border:0;padding:0;margin:0;min-width:0">
-            <legend class="label" style="padding:0">Thời gian học thử</legend>
-            <div class="row-slots">
-              <?php $i = 0; foreach ($slots as $val => $label): ?>
-                <label class="choice radio"><input type="radio" name="slot" value="<?= e($val) ?>"<?= $i === 0 ? ' checked' : '' ?>><span class="box"></span><span class="text"><?= e($label) ?></span></label>
-              <?php $i++; endforeach; ?>
-            </div>
+          <fieldset class="sched" id="sched">
+            <legend class="label">Ngày giờ học thử <span class="opt">(không chọn cũng được, Sunny sẽ gọi hẹn giờ)</span></legend>
+            <?php if ($schedule): ?>
+              <div class="chips" id="date-chips" role="radiogroup" aria-label="Chọn ngày"></div>
+              <div class="chips time" id="time-chips" role="radiogroup" aria-label="Chọn giờ" hidden></div>
+              <p class="sched-pick" id="sched-pick" aria-live="polite"></p>
+            <?php else: ?>
+              <p class="hint">Sunny sẽ gọi cho ba mẹ để hẹn ngày giờ phù hợp.</p>
+            <?php endif; ?>
+            <input type="hidden" name="visit_date" value="">
+            <input type="hidden" name="visit_time" value="">
           </fieldset>
 
           <!-- Bẫy chống bot: người thật không thấy ô này -->
@@ -229,7 +272,7 @@ site_header();
 <script>
 window.SUNNY = <?= json_encode([
     'courses' => $courses,
-    'slots' => $slots,
+    'schedule' => $schedule,
 ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 </script>
 <?php site_end(); ?>

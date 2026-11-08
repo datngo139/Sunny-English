@@ -64,6 +64,49 @@ function migrate(PDO $pdo): void
     )");
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_reg_created ON registrations(created_at)');
 
+    // Thêm cột ngày/giờ học thử cho bảng đăng ký (DB cũ trên hosting tự được nâng cấp).
+    $cols = array_column($pdo->query('PRAGMA table_info(registrations)')->fetchAll(), 'name');
+    foreach (['visit_date', 'visit_time'] as $col) {
+        if (!in_array($col, $cols, true)) {
+            try {
+                $pdo->exec("ALTER TABLE registrations ADD COLUMN $col TEXT NOT NULL DEFAULT ''");
+            } catch (PDOException $e) {
+                // Hai người cùng mở trang lần đầu: người kia đã thêm cột rồi → bỏ qua lỗi "duplicate column".
+                if (stripos($e->getMessage(), 'duplicate column') === false) {
+                    throw $e;
+                }
+            }
+        }
+    }
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_reg_visit ON registrations(visit_date, visit_time)');
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS courses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        code TEXT NOT NULL UNIQUE,
+        level TEXT NOT NULL DEFAULT 'tieuhoc',
+        icon TEXT NOT NULL DEFAULT 'book-open',
+        title TEXT NOT NULL,
+        ages TEXT NOT NULL DEFAULT '',
+        description TEXT NOT NULL DEFAULT '',
+        headline TEXT NOT NULL DEFAULT '',
+        outcome TEXT NOT NULL DEFAULT '',
+        points TEXT NOT NULL DEFAULT '',
+        image TEXT NOT NULL DEFAULT '',
+        sort INTEGER NOT NULL DEFAULT 0,
+        active INTEGER NOT NULL DEFAULT 1
+    )");
+    // Lần đầu: nạp 4 khoá học mẫu từ content.php để admin sửa tiếp. Chỉ nạp một lần.
+    $seeded = $pdo->query("SELECT v FROM settings WHERE k = 'courses_seeded'")->fetchColumn();
+    if (!$seeded) {
+        $ins = $pdo->prepare('INSERT OR IGNORE INTO courses (code, level, icon, title, ages, description, headline, outcome, points, sort, active)
+                              VALUES (?,?,?,?,?,?,?,?,?,?,1)');
+        foreach (sunny_default_courses() as $i => $c) {
+            $ins->execute([$c['id'], $c['level'], $c['icon'], $c['title'], $c['ages'], $c['desc'], $c['headline'], $c['outcome'],
+                implode("\n", $c['points']), ($i + 1) * 10]);
+        }
+        $pdo->exec("INSERT OR REPLACE INTO settings (k, v) VALUES ('courses_seeded', '1')");
+    }
+
     $pdo->exec('CREATE TABLE IF NOT EXISTS login_attempts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         ip_hash TEXT NOT NULL,
@@ -87,4 +130,18 @@ function app_secret(): string
         $v = $pdo->query("SELECT v FROM settings WHERE k = 'secret'")->fetchColumn();
     }
     return $secret = (string) $v;
+}
+
+/** Đọc / ghi cài đặt dạng khoá-giá trị (lưu trong bảng settings). */
+function setting_get(string $key, ?string $default = null): ?string
+{
+    $st = db()->prepare('SELECT v FROM settings WHERE k = ?');
+    $st->execute([$key]);
+    $v = $st->fetchColumn();
+    return $v === false ? $default : (string) $v;
+}
+
+function setting_set(string $key, string $value): void
+{
+    db()->prepare('INSERT OR REPLACE INTO settings (k, v) VALUES (?, ?)')->execute([$key, $value]);
 }

@@ -16,10 +16,24 @@ return [
     // tại /admin/setup.php. Chặn người lạ chiếm quyền admin trước bạn.
     'setup_code' => 'DOI-CHUOI-NAY-THANH-MA-BI-MAT-CUA-BAN',
 
-    // Email nhận thông báo khi có phụ huynh đăng ký học thử (để trống = không gửi email).
+    // Email nhận thông báo khi có phụ huynh đăng ký học thử. Bạn nên nhập danh sách ngay trong trang quản trị
+    // (Admin → Thông báo). Dòng này chỉ là dự phòng khi danh sách trong admin còn trống.
     'notify_email' => '',
-    // Email người gửi, nên cùng tên miền website (ví dụ 'no-reply@tenmiencuaban.com').
+    // Chỉ dùng khi KHÔNG cấu hình smtp bên dưới (gửi bằng hàm mail() của hosting): email người gửi, nên cùng tên miền.
     'from_email' => '',
+
+    // GỬI THƯ QUA GMAIL (khuyến nghị). Bỏ dấu // ở các dòng dưới và điền thông tin:
+    //  - user: địa chỉ Gmail dùng để gửi (nên là Gmail riêng cho website)
+    //  - pass: "mật khẩu ứng dụng" 16 ký tự tạo tại https://myaccount.google.com/apppasswords
+    //          (KHÔNG phải mật khẩu đăng nhập Gmail; cần bật xác minh 2 bước trước)
+    // 'smtp' => [
+    //     'host' => 'smtp.gmail.com',
+    //     'port' => 587,          // 587 + 'tls' (khuyến nghị) hoặc 465 + 'ssl'
+    //     'secure' => 'tls',
+    //     'user' => 'gmail-gui-thong-bao@gmail.com',
+    //     'pass' => 'xxxxxxxxxxxxxxxx',
+    //     'from_name' => 'Sunny Website',
+    // ],
 
     // Thông tin liên hệ hiển thị trên website.
     'contact' => [

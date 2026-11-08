@@ -3,6 +3,7 @@
   'use strict';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* Header: viền khi cuộn + menu mobile */
   var header = $('#site-header');
@@ -27,46 +28,80 @@
     d.addEventListener('click', function (e) { if (e.target === d || e.target.closest('[data-close]')) closeDlg(d); });
   });
 
-  var data = window.SUNNY || { courses: [], slots: {} };
+  /* Hiện dần + bắt đầu chạy hoạt hình khi cuộn tới */
+  var revealEls = $$('[data-reveal]');
+  if ('IntersectionObserver' in window && revealEls.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in-view'); io.unobserve(en.target); } });
+    }, { threshold: 0.18 });
+    revealEls.forEach(function (el) { io.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('in-view'); });
+  }
+
+  var data = window.SUNNY || { courses: [], schedule: [] };
   var form = $('#reg-form');
 
   function gotoRegister(courseId) {
     var sel = $('#f-course');
     if (sel && courseId) sel.value = courseId;
     var sec = $('#dang-ky');
-    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (sec) sec.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
     setTimeout(function () { var f = $('#f-parent'); if (f) f.focus({ preventScroll: true }); }, 450);
   }
-
-  /* Nút "Đăng ký / Đặt lịch" trên trang chủ: cuộn mượt + focus vào ô đầu tiên */
   $$('[data-open-register]').forEach(function (a) {
     a.addEventListener('click', function (e) { if ($('#dang-ky')) { e.preventDefault(); gotoRegister(); } });
   });
 
-  /* Lọc khoá học theo độ tuổi */
-  var tabs = $$('#age-tabs .tab');
-  tabs.forEach(function (t) {
-    t.addEventListener('click', function () {
-      tabs.forEach(function (x) { x.setAttribute('aria-selected', x === t ? 'true' : 'false'); });
-      var f = t.getAttribute('data-filter');
-      $$('#course-grid .course-card').forEach(function (c) {
-        var id = c.getAttribute('data-course');
-        c.hidden = !(f === '' || id === f || id === 'luyenthi');
-      });
-    });
-  });
+  /* ---------- Linh vật Sunny ---------- */
+  var mascot = $('#mascot');
+  if (mascot) {
+    var svg = $('svg', mascot), pupils = $$('.m-pupil', mascot), say = $('#mSay'), sayTimer = null, jumpTimer = null;
+    var phrases = ['Hello!', 'Chào con!', "Let's speak!", 'Con giỏi quá!', 'See you soon!', 'Hi there!'], pi = 0;
+    var lastPt = null, raf = false;
 
-  /* Chi tiết khoá học */
+    function lookAt(x, y) {
+      var k = svg.getBoundingClientRect().width / 400 || 1;
+      pupils.forEach(function (p) {
+        var eye = p.parentNode.getBoundingClientRect();
+        var dx = (x - (eye.left + eye.width / 2)) / k, dy = (y - (eye.top + eye.height / 2)) / k;
+        var dist = Math.sqrt(dx * dx + dy * dy) || 1, m = Math.min(dist / 10, 7);
+        p.style.transform = 'translate(' + (dx / dist * m).toFixed(2) + 'px,' + (dy / dist * m).toFixed(2) + 'px)';
+      });
+    }
+    function follow(x, y) { lastPt = [x, y]; if (!raf) { raf = true; requestAnimationFrame(function () { raf = false; lookAt(lastPt[0], lastPt[1]); }); } }
+    if (!reduceMotion) {
+      window.addEventListener('pointermove', function (e) { follow(e.clientX, e.clientY); }, { passive: true });
+      window.addEventListener('pointerdown', function (e) { follow(e.clientX, e.clientY); }, { passive: true });
+    }
+    function speak(text, ms) {
+      say.textContent = text;
+      mascot.classList.add('say');
+      clearTimeout(sayTimer);
+      sayTimer = setTimeout(function () { mascot.classList.remove('say'); }, ms || 2200);
+    }
+    mascot.addEventListener('click', function () {
+      mascot.classList.remove('jump'); void mascot.offsetWidth; mascot.classList.add('jump');
+      clearTimeout(jumpTimer); jumpTimer = setTimeout(function () { mascot.classList.remove('jump'); }, 900);
+      speak(phrases[pi++ % phrases.length]);
+    });
+    // Lời chào đầu tiên khi trang vừa mở
+    setTimeout(function () { speak('Hello!', 2600); }, 900);
+  }
+
+  /* ---------- Chi tiết khoá học ---------- */
   var cd = $('#course-dialog');
+  function findCourse(id) { return data.courses.filter(function (x) { return x.id === id; })[0]; }
   function showCourse(id) {
-    var c = data.courses.filter(function (x) { return x.id === id; })[0];
-    if (!c || !cd) return;
+    var c = findCourse(id);
+    if (!c) return;
+    if (!c.headline) { gotoRegister(id); return; } // khoá không có nội dung chi tiết → đi thẳng tới form
     $('#cd-badge').textContent = c.title;
-    $('#cd-ages').textContent = c.ages;
+    $('#cd-ages').textContent = c.ages; $('#cd-ages').hidden = !c.ages;
     $('#cd-title').textContent = c.headline;
-    $('#cd-outcome').textContent = c.outcome;
+    $('#cd-outcome').textContent = c.outcome; $('#cd-outcome').hidden = !c.outcome;
     var ul = $('#cd-points'); ul.innerHTML = '';
-    c.points.forEach(function (p) {
+    (c.points || []).forEach(function (p) {
       var li = document.createElement('li');
       li.style.cssText = 'display:flex;gap:12px;align-items:flex-start;font-weight:700;color:var(--ink-900);line-height:1.45';
       var tick = document.createElement('span');
@@ -84,17 +119,105 @@
   $$('[data-strip-course]').forEach(function (a) {
     a.addEventListener('click', function (e) {
       e.preventDefault();
-      var sec = $('#khoa-hoc'); if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+      var sec = $('#khoa-hoc'); if (sec) sec.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
       showCourse(a.getAttribute('data-strip-course'));
     });
   });
   var cdReg = $('#cd-register');
   if (cdReg) cdReg.addEventListener('click', function () { var id = cd.getAttribute('data-course'); closeDlg(cd); gotoRegister(id); });
 
+  /* ---------- Băng chuyền ảnh cơ sở vật chất (tự chạy) ---------- */
+  var car = $('#facility');
+  if (car) {
+    var track = $('#facility-track'), slides = $$('.car-slide', car), dots = $$('.car-dots button', car), idx = 0, timer = null, paused = false, visible = false;
+    var width = function () { return track.clientWidth; };
+    function goTo(i, smooth) {
+      idx = (i + slides.length) % slides.length;
+      track.scrollTo({ left: idx * width(), behavior: smooth === false || reduceMotion ? 'auto' : 'smooth' });
+      mark();
+    }
+    function mark() { dots.forEach(function (d, i) { d.setAttribute('aria-selected', i === idx ? 'true' : 'false'); }); }
+    track.addEventListener('scroll', function () {
+      var i = Math.round(track.scrollLeft / (width() || 1));
+      if (i !== idx && i >= 0 && i < slides.length) { idx = i; mark(); }
+    }, { passive: true });
+    $('.car-btn.prev', car).addEventListener('click', function () { goTo(idx - 1); restart(); });
+    $('.car-btn.next', car).addEventListener('click', function () { goTo(idx + 1); restart(); });
+    dots.forEach(function (d, i) { d.addEventListener('click', function () { goTo(i); restart(); }); });
+    track.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); goTo(idx + 1); restart(); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(idx - 1); restart(); }
+    });
+    function tick() { if (!paused && visible && !document.hidden) goTo(idx + 1); }
+    function restart() { clearInterval(timer); if (!reduceMotion) timer = setInterval(tick, 4500); }
+    ['mouseenter', 'focusin', 'touchstart'].forEach(function (ev) { car.addEventListener(ev, function () { paused = true; }, { passive: true }); });
+    ['mouseleave', 'focusout', 'touchend'].forEach(function (ev) { car.addEventListener(ev, function () { paused = false; }, { passive: true }); });
+    window.addEventListener('resize', function () { goTo(idx, false); });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }, { threshold: 0.35 }).observe(car);
+    } else { visible = true; }
+    restart();
+  }
+
+  /* ---------- Phóng to ảnh trong bài viết ---------- */
+  var proseImgs = $$('.prose img');
+  if (proseImgs.length) {
+    var lb = document.createElement('dialog');
+    lb.className = 'lightbox';
+    lb.innerHTML = '<div class="lb-wrap"><button class="dlg-close" type="button" aria-label="Đóng">×</button><img alt=""></div>';
+    document.body.appendChild(lb);
+    var lbImg = $('img', lb);
+    lb.addEventListener('click', function () { closeDlg(lb); });
+    proseImgs.forEach(function (im) {
+      im.addEventListener('click', function () { lbImg.src = im.currentSrc || im.src; lbImg.alt = im.alt || ''; openDlg(lb); });
+    });
+  }
+
   /* ---------- Form đăng ký học thử ---------- */
   if (!form) return;
   var errBox = $('#reg-error'), submit = $('#reg-submit'), bar = $('#reg-progress');
-  var tracked = ['parent_name', 'phone', 'child_name', 'child_age', 'course'];
+  var tracked = ['parent_name', 'phone', 'child_name', 'child_age', 'course', 'visit_time'];
+
+  /* Chọn ngày + giờ */
+  var dateBox = $('#date-chips'), timeBox = $('#time-chips'), pick = $('#sched-pick');
+  var chosenDate = '', chosenTime = '', days = data.schedule || [];
+  function chip(label, sub, checked, onClick) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', checked ? 'true' : 'false');
+    if (label) { var l = document.createElement('b'); l.textContent = label; b.appendChild(l); }
+    var s = document.createElement('span'); s.textContent = sub; b.appendChild(s);
+    b.addEventListener('click', onClick);
+    return b;
+  }
+  function renderDates() {
+    if (!dateBox) return;
+    dateBox.innerHTML = '';
+    days.forEach(function (d) {
+      dateBox.appendChild(chip(d.wd, d.dm, d.date === chosenDate, function () {
+        chosenDate = (chosenDate === d.date) ? '' : d.date; chosenTime = ''; sync(); renderDates(); renderTimes();
+      }));
+    });
+  }
+  function renderTimes() {
+    if (!timeBox) return;
+    timeBox.innerHTML = '';
+    var d = days.filter(function (x) { return x.date === chosenDate; })[0];
+    timeBox.hidden = !d;
+    if (!d) return;
+    d.slots.forEach(function (s) {
+      timeBox.appendChild(chip('', s.t.replace(/^0/, ''), s.t === chosenTime, function () {
+        chosenTime = (chosenTime === s.t) ? '' : s.t; sync(); renderTimes();
+      }));
+    });
+  }
+  function sync() {
+    form.elements.visit_date.value = chosenDate;
+    form.elements.visit_time.value = chosenTime;
+    var d = days.filter(function (x) { return x.date === chosenDate; })[0];
+    if (pick) pick.textContent = (d && chosenTime) ? 'Ba mẹ chọn: ' + d.full + ' lúc ' + chosenTime.replace(/^0/, '') + '. Sunny sẽ gọi xác nhận lại.' : (d ? 'Chọn thêm giờ ở bên dưới.' : '');
+    progress();
+  }
+  renderDates();
 
   function fieldEl(name) { return $('[data-field="' + name + '"]', form); }
   function setError(name, msg) {
@@ -123,6 +246,7 @@
     var age = form.elements.child_age.value;
     if (age !== '' && (isNaN(age) || age < 2 || age > 18)) { setError('child_age', 'Tuổi từ 2 đến 18'); ok = false; }
     if (!form.elements.consent.checked) { setError('consent', 'Vui lòng đồng ý để Sunny liên hệ tư vấn'); ok = false; }
+    if (chosenDate && !chosenTime) { errBox.textContent = 'Ba mẹ chọn thêm giờ học thử, hoặc bấm lại ngày đã chọn để bỏ chọn nhé.'; ok = false; }
     if (!ok) { var first = $('.has-error input, .has-error select', form); if (first) first.focus(); }
     return ok;
   }
@@ -141,12 +265,15 @@
           var parent = form.elements.parent_name.value.trim() || 'ba mẹ';
           var child = form.elements.child_name.value.trim() || 'con';
           var phone = form.elements.phone.value.trim();
-          $('#sd-text').textContent = 'Cảm ơn ' + parent + '. Sunny sẽ gọi đến số ' + phone + ' trong vòng 24 giờ để hẹn giờ test trình độ cho ' + child + '.';
-          form.reset(); progress();
+          var d = days.filter(function (x) { return x.date === chosenDate; })[0];
+          var when = (d && chosenTime) ? ' Ba mẹ đã chọn ' + d.full + ' lúc ' + chosenTime.replace(/^0/, '') + ', Sunny sẽ xác nhận lại khi gọi.' : '';
+          $('#sd-text').textContent = 'Cảm ơn ' + parent + '. Sunny sẽ gọi đến số ' + phone + ' trong vòng 24 giờ để hẹn giờ test trình độ cho ' + child + '.' + when;
+          form.reset(); chosenDate = ''; chosenTime = ''; sync(); renderDates(); renderTimes();
           openDlg($('#success-dialog'));
         } else {
           if (res.errors) Object.keys(res.errors).forEach(function (k) { setError(k, res.errors[k]); });
           errBox.textContent = res.message || 'Ba mẹ kiểm tra lại thông tin giúp Sunny nhé.';
+          if (res.refresh) { days = res.schedule || []; chosenDate = ''; chosenTime = ''; sync(); renderDates(); renderTimes(); }
         }
       })
       .catch(function () { errBox.textContent = 'Không gửi được, ba mẹ kiểm tra mạng rồi thử lại hoặc gọi Sunny trực tiếp.'; })

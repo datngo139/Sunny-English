@@ -54,6 +54,7 @@ function site_head(array $o = []): void
 <link rel="stylesheet" href="https://unpkg.com/lucide-static@0.460.0/font/lucide.css">
 <link rel="stylesheet" href="<?= e(asset('/assets/css/tokens.css')) ?>">
 <link rel="stylesheet" href="<?= e(asset('/assets/css/sunny.css')) ?>">
+<script>document.documentElement.className+=' js'</script>
 <?= $o['head_extra'] ?? '' ?>
 </head>
 <body>
@@ -66,6 +67,7 @@ function site_header(string $active = ''): void
     $links = [
         ['/#khoa-hoc', 'Khoá học', 'khoa-hoc'],
         ['/#ve-sunny', 'Về Sunny', 've-sunny'],
+        ['/#co-so', 'Cơ sở', 'co-so'],
         ['/bai-viet', 'Bài viết', 'bai-viet'],
         ['/#lien-he', 'Liên hệ', 'lien-he'],
     ];
@@ -118,8 +120,23 @@ function site_footer(): void
 <?php
 }
 
+/** Nút Zalo / Gọi nổi ở góc phải màn hình. */
+function floating_contact(): string
+{
+    $c = sunny_contact();
+    $h = '<div class="float-contact">';
+    if ($c['tel']) {
+        $h .= '<a class="fc fc-call" href="' . e($c['tel']) . '" aria-label="Gọi ' . e($c['phone']) . '">' . icon('phone') . '</a>';
+    }
+    if ($c['zaloUrl']) {
+        $h .= '<a class="fc fc-zalo" href="' . e($c['zaloUrl']) . '" target="_blank" rel="noopener" aria-label="Nhắn Zalo ' . e($c['zalo']) . '">' . icon('message-circle') . '<span>Chat Zalo</span></a>';
+    }
+    return $h . '</div>';
+}
+
 function site_end(array $o = []): void
 {
+    echo floating_contact();
     echo '<script src="' . e(asset('/assets/js/site.js')) . '" defer></script>' . "\n";
     echo ($o['scripts'] ?? '');
     echo "</body>\n</html>\n";
@@ -131,16 +148,24 @@ function risk_note(string $text, string $align = 'center'): string
     return '<p class="risk-note" style="text-align:' . e($align) . '">' . e($text) . '</p>';
 }
 
-/** Nút "gần nhà": Xem đường đến lớp + Zalo (luật 5). */
+/** Khối liên hệ nhanh (luật 5): Zalo + số điện thoại nổi nhất, "Xem đường đến lớp" là nút phụ. */
 function nearby_actions(): string
 {
     $c = sunny_contact();
-    $h = '<div class="nearby">';
-    if ($c['maps']) {
-        $h .= '<a class="btn btn-lg btn-outline btn-block" href="' . e($c['maps']) . '" target="_blank" rel="noopener">' . icon('map-pin') . 'Xem đường đến lớp</a>';
-    }
+    $h = '<div class="contact-stack">';
     if ($c['zaloUrl']) {
-        $h .= '<a class="zalo" href="' . e($c['zaloUrl']) . '" target="_blank" rel="noopener">' . icon('message-circle') . 'Zalo: ' . e($c['zalo']) . '</a>';
+        $h .= '<a class="btn btn-secondary btn-block btn-zalo" href="' . e($c['zaloUrl']) . '" target="_blank" rel="noopener">'
+            . icon('message-circle') . '<span class="zl-text"><span class="zl-main">Nhắn Zalo tư vấn</span><span class="zl-num">' . e($c['zalo']) . '</span></span></a>';
+    }
+    $row = '';
+    if ($c['tel']) {
+        $row .= '<a class="btn btn-outline btn-block only-mobile" href="' . e($c['tel']) . '">' . icon('phone') . 'Gọi ngay</a>';
+    }
+    if ($c['maps']) {
+        $row .= '<a class="btn btn-outline btn-block btn-map" href="' . e($c['maps']) . '" target="_blank" rel="noopener">' . icon('map-pin') . 'Xem đường đến lớp</a>';
+    }
+    if ($row !== '') {
+        $h .= '<div class="contact-row">' . $row . '</div>';
     }
     return $h . '</div>';
 }

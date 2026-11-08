@@ -58,5 +58,8 @@ require_once SUNNY_APP . '/helpers.php';
 require_once SUNNY_APP . '/db.php';
 require_once SUNNY_APP . '/content.php';
 require_once SUNNY_APP . '/sanitize.php';
+require_once SUNNY_APP . '/schedule.php';
+require_once SUNNY_APP . '/mailer.php';
 require_once SUNNY_APP . '/auth.php';
 require_once SUNNY_APP . '/layout.php';
+require_once SUNNY_APP . '/mascot.php';

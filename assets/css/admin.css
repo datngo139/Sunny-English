@@ -102,3 +102,40 @@ form.inline{display:inline-flex;gap:6px;align-items:center;margin:0}
   .adm-table .cell{text-align:right;min-width:0}
   .adm-logout .who{display:none}
 }
+
+/* ---- Bài viết: kéo thả ảnh ---- */
+.editor-box.dragging{border-color:var(--sun-500);background:var(--sun-50);outline:3px dashed var(--sun-400);outline-offset:-8px}
+
+/* ---- Khoá học ---- */
+.course-cell{display:flex;gap:12px;align-items:center;text-align:left}
+.adm-table .thumb{flex:none;width:64px;height:48px;border-radius:12px;background:var(--soft,var(--sun-50));color:var(--c,var(--sun-600));display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden}
+.adm-table .thumb img{width:100%;height:100%;object-fit:cover}
+.adm-table td.order .btn{min-width:36px;padding:0 8px}
+.adm-table td.order .btn[disabled]{opacity:.35}
+
+/* ---- Lịch học thử ---- */
+.sched-admin{display:grid;gap:20px;max-width:760px}
+.week{display:grid;gap:10px}
+.week-row{display:grid;grid-template-columns:150px 130px 36px 130px;gap:12px;align-items:center}
+.week-row .to{color:var(--text-muted);font-weight:700}
+.control.sm input[type=time],.control.sm input[type=date],.control.sm input[type=number]{font-size:15px;font-weight:700}
+.sched-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px}
+.blocked-add{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.blocked-add .btn{margin-bottom:0}
+.chips-removable{display:flex;gap:8px;flex-wrap:wrap}
+.rchip{display:inline-flex;align-items:center;gap:6px;background:var(--red-100);color:var(--red-700);border-radius:999px;padding:6px 8px 6px 14px;font-weight:800;font-size:14px}
+.rchip button{width:24px;height:24px;border-radius:999px;border:0;background:#fff;color:var(--red-700);cursor:pointer;font-size:16px;line-height:1;padding:0}
+.preview-days{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:8px}
+.pd{background:var(--ink-50);border:2px solid var(--ink-200);border-radius:16px;padding:12px 14px;display:grid;gap:2px}
+.pd b{color:var(--ink-900)}.pd span{font-size:14px}.pd small{color:var(--text-muted);font-weight:700}
+
+/* ---- Thông báo ---- */
+.notify-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;align-items:start}
+.notify-grid .side-card{gap:14px}
+
+@media (max-width:640px){
+  .week-row{grid-template-columns:1fr 1fr;}
+  .week-row .choice{grid-column:1/-1}
+  .week-row .to{display:none}
+  .adm-table .thumb{width:52px;height:40px}
+}

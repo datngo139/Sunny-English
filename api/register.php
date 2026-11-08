@@ -43,7 +43,8 @@ $phoneRaw = $str('phone', 20);
 $child = $str('child_name', 60);
 $ageRaw = $str('child_age', 3);
 $course = $str('course', 30);
-$slot = $str('slot', 30);
+$visitDate = $str('visit_date', 10);
+$visitTime = $str('visit_time', 5);
 
 $errors = [];
 if (mb_strlen($parent) < 2) {
@@ -69,8 +70,11 @@ $courseIds = array_column(sunny_courses(), 'id');
 if ($course !== '' && !in_array($course, $courseIds, true)) {
     $course = '';
 }
-if (!array_key_exists($slot, sunny_slots())) {
-    $slot = '';
+// Ngày giờ học thử: hoặc để trống cả hai, hoặc phải là một suất còn trống theo lịch.
+if ($visitDate === '' && $visitTime === '') {
+    $visitDate = $visitTime = '';
+} elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $visitDate) || !preg_match('/^\d{2}:\d{2}$/', $visitTime)) {
+    $errors['visit_time'] = 'Ngày giờ học thử không hợp lệ';
 }
 if ($errors) {
     reg_fail($wantsJson, 422, 'Ba mẹ kiểm tra lại thông tin giúp Sunny nhé.', $errors);
@@ -92,32 +96,37 @@ $st->execute([$phone, date('Y-m-d H:i:s', time() - 600)]);
 $duplicate = (int) $st->fetchColumn() > 0;
 
 if (!$duplicate) {
-    $pdo->prepare('INSERT INTO registrations (parent_name, phone, child_name, child_age, course, slot, ip_hash, created_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
-        ->execute([$parent, $phone, $child, $age, $course, $slot, $ip, date('Y-m-d H:i:s')]);
-
-    // Gửi email báo cho trung tâm (nếu đã cấu hình). Lỗi gửi mail không làm hỏng đăng ký.
-    $to = (string) config('notify_email', '');
-    if ($to !== '' && filter_var($to, FILTER_VALIDATE_EMAIL)) {
-        $courseTitle = '';
-        foreach (sunny_courses() as $co) {
-            if ($co['id'] === $course) {
-                $courseTitle = $co['title'];
+    // Khoá ghi (IMMEDIATE) để hai phụ huynh không cùng giành một suất ở cùng thời điểm.
+    $pdo->exec('BEGIN IMMEDIATE');
+    try {
+        if ($visitDate !== '' && !schedule_slot_ok($visitDate, $visitTime)) {
+            $pdo->exec('ROLLBACK');
+            if ($wantsJson) {
+                json_response(['ok' => false, 'refresh' => true, 'schedule' => schedule_available(),
+                    'message' => 'Giờ này vừa có bạn khác chọn hoặc đã hết chỗ. Ba mẹ chọn giờ khác giúp Sunny nhé.',
+                    'errors' => ['visit_time' => 'Hãy chọn giờ khác']], 409);
             }
+            redirect('/?dang-ky=loi#dang-ky');
         }
-        $body = "Có phụ huynh vừa đăng ký học thử trên website:\n\n"
-            . "Phụ huynh: $parent\nĐiện thoại: $phone\n"
-            . 'Tên con: ' . ($child ?: '(chưa nhập)') . "\n"
-            . 'Tuổi: ' . ($age ?? '(chưa nhập)') . "\n"
-            . 'Khoá học: ' . ($courseTitle ?: '(chưa chọn)') . "\n"
-            . 'Khung giờ: ' . (sunny_slots()[$slot] ?? '(chưa chọn)') . "\n\n"
-            . 'Xem tất cả: ' . abs_url('/admin/dang-ky.php') . "\n";
-        $from = (string) config('from_email', '');
-        $headers = ['Content-Type: text/plain; charset=UTF-8'];
-        if ($from !== '' && filter_var($from, FILTER_VALIDATE_EMAIL)) {
-            $headers[] = 'From: Sunny Website <' . $from . '>';
+        $pdo->prepare('INSERT INTO registrations (parent_name, phone, child_name, child_age, course, visit_date, visit_time, ip_hash, created_at)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+            ->execute([$parent, $phone, $child, $age, $course, $visitDate, $visitTime, $ip, date('Y-m-d H:i:s')]);
+        $pdo->exec('COMMIT');
+    } catch (Throwable $e) {
+        try {
+            $pdo->exec('ROLLBACK');
+        } catch (Throwable $ignored) {
         }
-        @mail($to, '=?UTF-8?B?' . base64_encode('Đăng ký học thử mới: ' . $parent) . '?=', $body, implode("\r\n", $headers));
+        throw $e;
+    }
+
+    // Báo cho trung tâm qua email (Gmail SMTP nếu đã cấu hình). Lỗi gửi thư không làm hỏng đăng ký.
+    $to = notify_recipients();
+    if ($to) {
+        $row = ['parent_name' => $parent, 'phone' => $phone, 'child_name' => $child, 'child_age' => $age, 'course' => $course,
+            'visit_date' => $visitDate, 'visit_time' => $visitTime];
+        send_mail($to, 'Đăng ký học thử mới: ' . $parent . ($visitDate !== '' ? ' (' . schedule_label($visitDate, $visitTime) . ')' : ''),
+            registration_mail_body($row));
     }
 }
 
