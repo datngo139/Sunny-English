@@ -159,6 +159,21 @@
     restart();
   }
 
+  /* ---------- Icon nền mục cơ sở vật chất: xê dịch nhẹ theo con trỏ để có chiều sâu ---------- */
+  var fxSec = $('#co-so');
+  if (fxSec && !reduceMotion && window.matchMedia('(pointer: fine)').matches) {
+    var fxRaf = false, fxPt = null;
+    fxSec.addEventListener('pointermove', function (e) {
+      fxPt = e; if (fxRaf) return; fxRaf = true;
+      requestAnimationFrame(function () {
+        fxRaf = false; var r = fxSec.getBoundingClientRect();
+        fxSec.style.setProperty('--px', ((fxPt.clientX - r.left) / r.width - 0.5).toFixed(3));
+        fxSec.style.setProperty('--py', ((fxPt.clientY - r.top) / r.height - 0.5).toFixed(3));
+      });
+    }, { passive: true });
+    fxSec.addEventListener('pointerleave', function () { fxSec.style.setProperty('--px', 0); fxSec.style.setProperty('--py', 0); });
+  }
+
   /* ---------- Phóng to ảnh trong bài viết ---------- */
   var proseImgs = $$('.prose img');
   if (proseImgs.length) {

@@ -31,7 +31,7 @@ echo sun_defs();
         <div class="cta-stack">
           <div>
             <a class="btn btn-lg btn-block" href="#dang-ky" data-open-register>Đăng ký test trình độ miễn phí cho con</a>
-            <?= risk_note('Chưa cần quyết định học – vẫn nhận báo cáo trình độ của con') ?>
+            <?= risk_note('Chưa cần quyết định học – vẫn nhận báo cáo trình độ của con', 'inherit') ?>
           </div>
           <?= nearby_actions() ?>
         </div>
@@ -53,8 +53,8 @@ echo sun_defs();
   <!-- VỀ SUNNY -->
   <section id="ve-sunny" class="container" style="padding-top:40px;padding-bottom:40px">
     <?php foreach (sunny_why() as $i => $w): ?>
-      <div class="feature<?= $i % 2 === 0 ? ' flip' : '' ?>">
-        <div class="feature-art tint-<?= e($w['tint']) ?>" data-reveal><?= scene_svg($w['scene']) ?></div>
+      <div class="feature tint-<?= e($w['tint']) ?><?= $i % 2 === 0 ? ' flip' : '' ?>">
+        <div class="feature-art" data-reveal><?= scene_svg($w['scene']) ?></div>
         <div class="feature-copy" data-reveal>
           <h2><?= e($w['title']) ?></h2>
           <p><?= e($w['body']) ?></p>
@@ -95,7 +95,8 @@ echo sun_defs();
   <?php endif; ?>
 
   <!-- CƠ SỞ VẬT CHẤT -->
-  <section id="co-so" class="section" aria-labelledby="h-coso">
+  <section id="co-so" class="section facility" aria-labelledby="h-coso">
+    <?= facility_icons() ?>
     <div class="container">
       <div class="section-head" style="margin-bottom:12px">
         <div>

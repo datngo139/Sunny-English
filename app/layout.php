@@ -145,7 +145,7 @@ function site_end(array $o = []): void
 /** Dòng gỡ rủi ro dưới nút chính (luật 4). */
 function risk_note(string $text, string $align = 'center'): string
 {
-    return '<p class="risk-note" style="text-align:' . e($align) . '">' . e($text) . '</p>';
+    return '<p class="risk-note"' . ($align === 'inherit' ? '' : ' style="text-align:' . e($align) . '"') . '>' . e($text) . '</p>';
 }
 
 /** Khối liên hệ nhanh (luật 5): Zalo + số điện thoại nổi nhất, "Xem đường đến lớp" là nút phụ. */
