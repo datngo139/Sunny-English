@@ -1,0 +1,15 @@
+# Cấu hình & dữ liệu thật — KHÔNG đưa lên GitHub
+app/config.php
+data/*
+!data/.htaccess
+!data/.gitkeep
+uploads/*
+!uploads/.htaccess
+!uploads/.gitkeep
+
+# Hệ thống / công cụ
+.DS_Store
+*.log
+.claude/
+.idea/
+.vscode/
