@@ -107,6 +107,51 @@ function migrate(PDO $pdo): void
         $pdo->exec("INSERT OR REPLACE INTO settings (k, v) VALUES ('courses_seeded', '1')");
     }
 
+    // ----- Sunny World: chủ đề từ vựng, thẻ từ, truyện, từ điển chung -----
+    $pdo->exec("CREATE TABLE IF NOT EXISTS sw_topics (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        slug TEXT NOT NULL UNIQUE,
+        title_en TEXT NOT NULL,
+        title_vi TEXT NOT NULL DEFAULT '',
+        color TEXT NOT NULL DEFAULT '#FDBE10',
+        art TEXT NOT NULL DEFAULT '',
+        image TEXT NOT NULL DEFAULT '',
+        sort INTEGER NOT NULL DEFAULT 0,
+        active INTEGER NOT NULL DEFAULT 1
+    )");
+    $pdo->exec("CREATE TABLE IF NOT EXISTS sw_cards (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        topic_id INTEGER NOT NULL,
+        word TEXT NOT NULL,
+        meaning TEXT NOT NULL DEFAULT '',
+        example TEXT NOT NULL DEFAULT '',
+        example_vi TEXT NOT NULL DEFAULT '',
+        art TEXT NOT NULL DEFAULT '',
+        image TEXT NOT NULL DEFAULT '',
+        sort INTEGER NOT NULL DEFAULT 0,
+        active INTEGER NOT NULL DEFAULT 1
+    )");
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_sw_cards_topic ON sw_cards(topic_id, sort)');
+    $pdo->exec("CREATE TABLE IF NOT EXISTS sw_stories (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        slug TEXT NOT NULL UNIQUE,
+        kind TEXT NOT NULL DEFAULT 'story',
+        title TEXT NOT NULL,
+        title_vi TEXT NOT NULL DEFAULT '',
+        art TEXT NOT NULL DEFAULT '',
+        image TEXT NOT NULL DEFAULT '',
+        color TEXT NOT NULL DEFAULT '#FFE9A8',
+        pages TEXT NOT NULL DEFAULT '[]',
+        glossary TEXT NOT NULL DEFAULT '',
+        sort INTEGER NOT NULL DEFAULT 0,
+        active INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )");
+    $pdo->exec('CREATE TABLE IF NOT EXISTS sw_dict (word TEXT PRIMARY KEY, meaning TEXT NOT NULL)');
+    if (!$pdo->query("SELECT v FROM settings WHERE k = 'sw_seeded'")->fetchColumn()) {
+        sw_seed($pdo); // nội dung mẫu, chỉ nạp một lần
+    }
+
     $pdo->exec('CREATE TABLE IF NOT EXISTS login_attempts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         ip_hash TEXT NOT NULL,

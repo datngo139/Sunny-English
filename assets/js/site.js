@@ -95,7 +95,7 @@
   function showCourse(id) {
     var c = findCourse(id);
     if (!c) return;
-    if (!c.headline) { gotoRegister(id); return; } // khoá không có nội dung chi tiết → đi thẳng tới form
+    if (!c.headline) { if (data.book) window.open(data.book, '_blank', 'noopener'); return; } // khoá không có nội dung chi tiết → mở Zalo đặt lịch
     $('#cd-badge').textContent = c.title;
     $('#cd-ages').textContent = c.ages; $('#cd-ages').hidden = !c.ages;
     $('#cd-title').textContent = c.headline;

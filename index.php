@@ -5,7 +5,6 @@ require __DIR__ . '/app/bootstrap.php';
 $courses = sunny_courses();
 $facility = sunny_facility();
 $posts = published_posts(3);
-$schedule = schedule_available();
 
 /** "Tiếng Anh Mầm Non" → "Mầm Non" cho thanh khoá học gọn trên một hàng. */
 $short = fn(string $t) => trim(preg_replace('/^Tiếng Anh\s+/u', '', $t));
@@ -30,7 +29,7 @@ echo sun_defs();
         <p class="lead">Ở Sunny, con <b>tự tin nói tiếng Anh</b> và đạt từng mốc Cambridge Starters, Movers, Flyers. Lớp cho con từ 3 đến 14 tuổi.</p>
         <div class="cta-stack">
           <div>
-            <a class="btn btn-lg btn-block" href="#dang-ky" data-open-register>Đăng ký test trình độ miễn phí cho con</a>
+            <?= contact_cta('Đặt lịch học thử miễn phí cho con') ?>
             <?= risk_note('Chưa cần quyết định học – vẫn nhận báo cáo trình độ của con', 'inherit') ?>
           </div>
           <?= nearby_actions() ?>
@@ -94,6 +93,22 @@ echo sun_defs();
   </section>
   <?php endif; ?>
 
+  <!-- SUNNY WORLD -->
+  <section id="sunny-world" class="section sw-teaser" aria-labelledby="h-sw">
+    <div class="container sw-teaser-in">
+      <div class="sw-teaser-copy">
+        <span class="overline">Mới · Miễn phí</span>
+        <h2 id="h-sw">Sunny World: con vừa chơi vừa học tiếng Anh</h2>
+        <p class="section-lead">Con lật thẻ học từ vựng theo chủ đề và đọc truyện tiếng Anh, chạm vào từng từ là thấy nghĩa tiếng Việt. Không cần tài khoản.</p>
+        <a class="btn btn-lg btn-secondary" href="<?= e(sw_url()) ?>">Vào Sunny World cùng con</a>
+      </div>
+      <a class="sw-teaser-art" href="<?= e(sw_url()) ?>" aria-label="Vào Sunny World">
+        <?php foreach (['cat', 'apple', 'book', 'rainbow', 'star', 'num-3'] as $k => $art): ?><span class="tz tz<?= $k ?>"><?= sw_art($art) ?></span><?php endforeach; ?>
+        <svg class="tz-sun" viewBox="0 0 200 200" aria-hidden="true"><use href="#sunFace"/></svg>
+      </a>
+    </div>
+  </section>
+
   <!-- CƠ SỞ VẬT CHẤT -->
   <section id="co-so" class="section facility" aria-labelledby="h-coso">
     <?= facility_icons() ?>
@@ -125,20 +140,6 @@ echo sun_defs();
     </div>
   </section>
 
-  <!-- QUY TRÌNH HỌC THỬ -->
-  <section class="section section-sunny" aria-labelledby="h-steps">
-    <div class="container">
-      <div class="section-head" style="margin-bottom:28px">
-        <h2 id="h-steps">Học thử cho con thế nào?</h2>
-      </div>
-      <ol class="steps" style="list-style:none;margin:0;padding:0">
-        <?php foreach (sunny_steps() as $i => $s): ?>
-          <li class="step"><span class="n"><?= $i + 1 ?></span><h3><?= e($s['title']) ?></h3><p><?= e($s['body']) ?></p></li>
-        <?php endforeach; ?>
-      </ol>
-    </div>
-  </section>
-
   <!-- BÀI VIẾT MỚI -->
   <?php if ($posts): ?>
   <section class="section" id="bai-viet-moi" aria-labelledby="h-posts">
@@ -152,94 +153,11 @@ echo sun_defs();
   </section>
   <?php endif; ?>
 
-  <!-- ĐĂNG KÝ HỌC THỬ -->
-  <section id="dang-ky" class="section section-soft">
-    <div class="reg-wrap" style="padding:0 20px">
-      <div class="reg-head">
-        <h2>Đăng ký test trình độ miễn phí cho con</h2>
-        <p>Chọn ngày giờ phù hợp, Sunny gọi xác nhận trong 24 giờ.</p>
-      </div>
-      <div class="progress" aria-hidden="true"><i id="reg-progress"></i></div>
-      <form class="card" id="reg-form" action="<?= e(url('/api/register.php')) ?>" method="post" novalidate style="padding:28px">
-        <div class="form-grid">
-          <?php $flag = $_GET['dang-ky'] ?? ''; ?>
-          <div class="form-msg" id="reg-error" role="alert"><?= $flag === 'loi' ? 'Chưa gửi được đăng ký. Ba mẹ kiểm tra lại thông tin hoặc gọi trực tiếp cho Sunny nhé.' : '' ?></div>
-          <?php if ($flag === 'ok'): ?><div class="form-msg" style="background:var(--green-100);color:var(--green-700)" role="status">Đăng ký thành công! Sunny sẽ gọi cho ba mẹ trong 24 giờ.</div><?php endif; ?>
-
-          <div class="field" data-field="parent_name">
-            <label class="label" for="f-parent">Họ tên phụ huynh</label>
-            <span class="control"><input id="f-parent" name="parent_name" type="text" autocomplete="name" placeholder="Nguyễn Thị Lan" maxlength="80" required></span>
-            <span class="error-text"></span>
-          </div>
-
-          <div class="field" data-field="phone">
-            <label class="label" for="f-phone">Số điện thoại (Zalo)</label>
-            <span class="control"><?= icon('phone') ?><input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="09xx xxx xxx" maxlength="20" required></span>
-            <span class="error-text"></span>
-          </div>
-
-          <div class="row-2">
-            <div class="field" data-field="child_name">
-              <label class="label" for="f-child">Tên của con <span class="opt">(không bắt buộc)</span></label>
-              <span class="control"><input id="f-child" name="child_name" type="text" placeholder="An" maxlength="60"></span>
-              <span class="error-text"></span>
-            </div>
-            <div class="field" data-field="child_age">
-              <label class="label" for="f-age">Tuổi</label>
-              <span class="control"><input id="f-age" name="child_age" type="number" inputmode="numeric" min="2" max="18" placeholder="7"></span>
-              <span class="error-text"></span>
-            </div>
-          </div>
-
-          <div class="field" data-field="course">
-            <label class="label" for="f-course">Khoá học quan tâm</label>
-            <span class="control has-select">
-              <select id="f-course" name="course">
-                <option value="">Chưa biết, nhờ Sunny tư vấn</option>
-                <?php foreach ($courses as $co): ?>
-                  <option value="<?= e($co['id']) ?>"><?= e($co['title']) ?><?= $co['ages'] !== '' ? ' (' . e($co['ages']) . ')' : '' ?></option>
-                <?php endforeach; ?>
-              </select>
-            </span>
-            <span class="error-text"></span>
-          </div>
-
-          <fieldset class="sched" id="sched">
-            <legend class="label">Ngày giờ học thử <span class="opt">(không chọn cũng được, Sunny sẽ gọi hẹn giờ)</span></legend>
-            <?php if ($schedule): ?>
-              <div class="chips" id="date-chips" role="radiogroup" aria-label="Chọn ngày"></div>
-              <div class="chips time" id="time-chips" role="radiogroup" aria-label="Chọn giờ" hidden></div>
-              <p class="sched-pick" id="sched-pick" aria-live="polite"></p>
-            <?php else: ?>
-              <p class="hint">Sunny sẽ gọi cho ba mẹ để hẹn ngày giờ phù hợp.</p>
-            <?php endif; ?>
-            <input type="hidden" name="visit_date" value="">
-            <input type="hidden" name="visit_time" value="">
-          </fieldset>
-
-          <!-- Bẫy chống bot: người thật không thấy ô này -->
-          <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-          <input type="hidden" name="ts" value="<?= time() ?>">
-
-          <div class="field" data-field="consent">
-            <label class="choice"><input type="checkbox" name="consent" value="1" checked><span class="box"></span><span class="text">Tôi đồng ý để Sunny liên hệ tư vấn</span></label>
-            <span class="error-text"></span>
-          </div>
-
-          <div>
-            <button class="btn btn-lg btn-block" type="submit" id="reg-submit">Đặt lịch test miễn phí cho con</button>
-            <?= risk_note('Chưa cần quyết định học – vẫn nhận báo cáo trình độ của con') ?>
-          </div>
-        </div>
-      </form>
-    </div>
-  </section>
-
   <!-- CTA CUỐI -->
   <section class="container final-cta">
     <h2>Cho con học thử một buổi, ba mẹ xem con nói được gì</h2>
     <div style="width:100%;max-width:420px">
-      <a class="btn btn-lg btn-block" href="#dang-ky" data-open-register>Đặt lịch học thử cho con</a>
+      <?= contact_cta('Đặt lịch học thử cho con') ?>
       <?= risk_note('30 phút, 1 kèm 1 với giáo viên') ?>
     </div>
   </section>
@@ -254,18 +172,8 @@ echo sun_defs();
     <p id="cd-outcome" style="font-size:17px;margin-bottom:16px"></p>
     <ul id="cd-points" style="list-style:none;margin:0 0 4px;padding:0;display:grid;gap:10px"></ul>
     <div class="dlg-actions" style="flex-direction:column">
-      <div><button class="btn btn-lg btn-block" type="button" id="cd-register">Đặt lịch học thử cho con</button><?= risk_note('30 phút, 1 kèm 1 với giáo viên') ?></div>
+      <div><?= contact_cta('Đặt lịch học thử cho con') ?><?= risk_note('30 phút, 1 kèm 1 với giáo viên') ?></div>
     </div>
-  </div>
-</dialog>
-
-<!-- Hộp thoại đăng ký thành công -->
-<dialog class="dlg" id="success-dialog" aria-labelledby="sd-title">
-  <div class="dlg-body">
-    <button class="dlg-close" type="button" aria-label="Đóng" data-close>×</button>
-    <h3 class="dlg-title" id="sd-title">Đăng ký thành công!</h3>
-    <p id="sd-text"></p>
-    <div class="dlg-actions"><button class="btn btn-block" type="button" data-close>Đóng</button></div>
   </div>
 </dialog>
 
@@ -273,7 +181,7 @@ echo sun_defs();
 <script>
 window.SUNNY = <?= json_encode([
     'courses' => $courses,
-    'schedule' => $schedule,
+    'book' => booking_link()[0],
 ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 </script>
 <?php site_end(); ?>

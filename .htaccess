@@ -18,6 +18,9 @@ RewriteRule \.(sqlite|sqlite-wal|sqlite-shm|log|md|sample\.php)$ - [R=404,L]
 # Đường dẫn đẹp
 RewriteRule ^bai-viet/?$ blog.php [L,QSA]
 RewriteRule ^bai-viet/([a-z0-9-]+)/?$ post.php?slug=$1 [L,QSA]
+RewriteRule ^sunny-world/?$ sunny-world.php [L,QSA]
+RewriteRule ^sunny-world/(tu-vung|truyen|ba-me)/?$ sunny-world.php?view=$1 [L,QSA]
+RewriteRule ^sunny-world/(tu-vung|truyen)/([a-z0-9-]+)/?$ sunny-world.php?view=$1&slug=$2 [L,QSA]
 RewriteRule ^sitemap\.xml$ sitemap.php [L]
 RewriteRule ^robots\.txt$ robots.php [L]
 </IfModule>

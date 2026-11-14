@@ -428,3 +428,36 @@ dialog.lightbox::backdrop{background:rgba(30,20,10,.88)}
   .js [data-reveal]{opacity:1;transform:none}
   .car-track{scroll-behavior:auto}
 }
+
+/* ================= Nút đặt lịch qua Zalo + mục giới thiệu Sunny World ================= */
+.btn-book{height:auto;min-height:var(--control-h-lg);padding-top:8px;padding-bottom:8px;text-wrap:balance}
+.btn-book .icon{font-size:22px;flex:none}
+.sw-teaser{background:#CDEBFF;border-top:2px solid var(--ink-200);border-bottom:2px solid var(--ink-200)}
+.sw-teaser-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px;align-items:center}
+.sw-teaser h2{font-size:clamp(28px,4.2vw,42px);line-height:1.15;color:var(--blue-700);letter-spacing:-.02em;margin-bottom:12px}
+.sw-teaser .overline{color:var(--blue-500)}
+.sw-teaser .section-lead{color:var(--blue-900);margin-bottom:22px}
+.sw-teaser-art{position:relative;display:block;aspect-ratio:5/4;max-width:460px;width:100%;margin:0 auto}
+.sw-teaser-art .tz{position:absolute;width:24%;aspect-ratio:1;background:#fff;border:3px solid var(--ink-900);border-radius:24%;box-shadow:0 5px 0 var(--ink-900);padding:3.2%;animation:tz-float 4s ease-in-out infinite}
+.sw-teaser-art .tz svg{display:block;width:100%;height:100%}
+.sw-teaser-art .tz0{left:2%;top:6%;transform:rotate(-8deg)}
+.sw-teaser-art .tz1{right:4%;top:0;animation-delay:-1s}
+.sw-teaser-art .tz2{left:0;bottom:6%;animation-delay:-2s}
+.sw-teaser-art .tz3{right:0;bottom:12%;animation-delay:-.5s}
+.sw-teaser-art .tz4{left:38%;top:-2%;width:18%;animation-delay:-1.6s}
+.sw-teaser-art .tz5{left:40%;bottom:0;width:18%;animation-delay:-2.6s}
+.sw-teaser-art .tz-sun{position:absolute;left:24%;top:20%;width:52%;animation:m-bob 3s ease-in-out infinite}
+@keyframes tz-float{0%,100%{translate:0 0}50%{translate:0 -10px}}
+@media (prefers-reduced-motion:reduce){.sw-teaser-art .tz,.sw-teaser-art .tz-sun{animation:none}}
+
+/* Menu: không xuống dòng; màn hình cỡ vừa (≤920px) dùng menu thu gọn */
+.nav a.link,.nav .btn{white-space:nowrap}
+@media (max-width:920px){
+  .nav-toggle{display:inline-flex}
+  .nav{position:absolute;left:0;right:0;top:var(--header-h);background:#fff;border-bottom:2px solid var(--ink-200);flex-direction:column;align-items:stretch;gap:0;padding:8px 20px 20px;display:none}
+  .nav.open{display:flex}
+  .nav a.link{padding:14px 0;border-bottom:1px solid var(--ink-100)}
+  .nav .btn{margin-top:14px}
+}
+.sw-teaser{background:var(--sun-50)}
+[hidden]{display:none!important}

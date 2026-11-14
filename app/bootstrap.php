@@ -63,3 +63,6 @@ require_once SUNNY_APP . '/mailer.php';
 require_once SUNNY_APP . '/auth.php';
 require_once SUNNY_APP . '/layout.php';
 require_once SUNNY_APP . '/mascot.php';
+require_once SUNNY_APP . '/sw_art.php';
+require_once SUNNY_APP . '/sw_seed.php';
+require_once SUNNY_APP . '/sw.php';

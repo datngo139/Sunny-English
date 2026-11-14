@@ -7,6 +7,17 @@ require dirname(__DIR__) . '/app/bootstrap.php';
 
 $wantsJson = stripos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false;
 
+// Form đăng ký học thử đã được gỡ khỏi website (phụ huynh đặt lịch qua Zalo). Cổng này bị tắt để không nhận dữ liệu cá nhân.
+// Muốn bật lại: thêm 'registration' => true vào app/config.php và khôi phục form trên trang chủ.
+if (!config('registration', false)) {
+    http_response_code(410);
+    if ($wantsJson) {
+        json_response(['ok' => false, 'message' => 'Sunny không còn nhận đăng ký qua form. Ba mẹ nhắn Zalo cho Sunny nhé.'], 410);
+    }
+    header('Content-Type: text/plain; charset=utf-8');
+    exit('Sunny không còn nhận đăng ký qua form. Ba mẹ nhắn Zalo cho Sunny nhé.');
+}
+
 function reg_fail(bool $json, int $code, string $message, array $errors = []): never
 {
     if ($json) {

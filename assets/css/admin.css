@@ -139,3 +139,17 @@ form.inline{display:inline-flex;gap:6px;align-items:center;margin:0}
   .week-row .to{display:none}
   .adm-table .thumb{width:52px;height:40px}
 }
+
+/* ---- Sunny World (từ vựng, truyện) ---- */
+.adm-legacy{margin-top:40px;font-size:13px;color:var(--text-muted)}
+.adm-legacy a{font-weight:600}
+.sw-art-sm{width:48px;height:48px;flex:none;display:flex;align-items:center;justify-content:center;background:var(--ink-50);border:2px solid var(--ink-200);border-radius:12px;padding:4px;overflow:hidden}
+.sw-art-sm svg,.sw-art-sm img{width:100%;height:100%;object-fit:contain;display:block}
+.sw-art-sm .art-letter{font-weight:900;font-size:22px;color:var(--blue-600)}
+.card-form{display:grid;gap:16px}
+.card-form .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.miss{display:flex;gap:6px;flex-wrap:wrap}
+.miss code{background:var(--sun-100);color:var(--brown-700)}
+.picker-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.picker-row .cover-preview{width:120px;aspect-ratio:1;flex:none}
+@media (max-width:640px){.card-form .grid-2{grid-template-columns:1fr}}

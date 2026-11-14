@@ -9,6 +9,7 @@ if (preg_match('#^/(app|data|dev|\.git)(/|$)#', $uri) || preg_match('#/\.#', $ur
 if (preg_match('#\.(sqlite|sqlite-wal|sqlite-shm|log|md)$#', $uri)) { http_response_code(404); echo "blocked"; return true; }
 if ($uri === '/bai-viet' || $uri === '/bai-viet/') { require $root.'/blog.php'; return true; }
 if (preg_match('#^/bai-viet/([a-z0-9-]+)/?$#', $uri, $m)) { $_GET['slug']=$m[1]; require $root.'/post.php'; return true; }
+if (preg_match('#^/sunny-world(?:/(tu-vung|truyen|ba-me)(?:/([a-z0-9-]+))?)?/?$#', $uri, $m)) { if (!empty($m[1])) $_GET['view']=$m[1]; if (!empty($m[2])) $_GET['slug']=$m[2]; require $root.'/sunny-world.php'; return true; }
 if ($uri === '/sitemap.xml') { require $root.'/sitemap.php'; return true; }
 if ($uri === '/robots.txt') { require $root.'/robots.php'; return true; }
 $f = $root.$uri;

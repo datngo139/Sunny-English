@@ -61,6 +61,28 @@
       { input: '#image-input', file: '#image-file', preview: '#image-preview', clear: '#image-clear', pick: '#image-pick' });
   }
 
+  /* ---- Ô chọn ảnh dùng chung (Sunny World: chủ đề, thẻ từ, truyện) ---- */
+  $$('[data-picker]').forEach(function (box) {
+    var f = box.closest('form[data-upload]'); if (!f) return;
+    var up = makeUploader(f.getAttribute('data-upload'), f.getAttribute('data-csrf'));
+    var input = $('input[type=hidden]', box), file = $('input[type=file]', box), preview = $('.cover-preview', box), clearBtn = $('[data-clear]', box);
+    $('[data-pick]', box).addEventListener('click', function () { file.click(); });
+    file.addEventListener('change', function () {
+      var img = file.files[0]; file.value = ''; if (!img) return;
+      preview.style.opacity = '.5';
+      up(img).then(function (j) {
+        input.value = j.path;
+        preview.innerHTML = '<img alt="">'; preview.firstChild.src = j.url; preview.removeAttribute('data-empty');
+        clearBtn.hidden = false;
+      }).catch(function (err) { window.alert(err.message); }).then(function () { preview.style.opacity = ''; });
+    });
+    clearBtn.addEventListener('click', function () {
+      input.value = '';
+      preview.innerHTML = '<span><i class="icon icon-image" aria-hidden="true"></i>Chưa có ảnh</span>'; preview.setAttribute('data-empty', '1');
+      clearBtn.hidden = true;
+    });
+  });
+
   /* ---- Trang lịch: ngày nghỉ ---- */
   var blockedInput = $('#blocked-input');
   if (blockedInput) {

@@ -13,3 +13,6 @@ uploads/*
 .claude/
 .idea/
 .vscode/
+
+# Ghi chú nội bộ (kế hoạch, tư liệu tham khảo) — chỉ giữ ở máy
+TU-LIEU-SUNNY-WORLD.md

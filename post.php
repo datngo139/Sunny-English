@@ -67,7 +67,7 @@ site_header('bai-viet');
 
     <aside class="article-cta">
       <h2>Cho con học thử một buổi, ba mẹ xem con nói được gì</h2>
-      <a class="btn btn-lg" href="<?= e(url('/#dang-ky')) ?>">Đặt lịch học thử cho con</a>
+      <?= contact_cta('Đặt lịch học thử cho con', 'btn-lg') ?>
       <?= risk_note('30 phút, 1 kèm 1 với giáo viên') ?>
     </aside>
   </article>

@@ -57,7 +57,7 @@ function site_head(array $o = []): void
 <script>document.documentElement.className+=' js'</script>
 <?= $o['head_extra'] ?? '' ?>
 </head>
-<body>
+<body<?= !empty($o['body_class']) ? ' class="' . e($o['body_class']) . '"' : '' ?>>
 <a class="skip-link" href="#noi-dung">Bỏ qua, tới nội dung chính</a>
 <?php
 }
@@ -67,7 +67,7 @@ function site_header(string $active = ''): void
     $links = [
         ['/#khoa-hoc', 'Khoá học', 'khoa-hoc'],
         ['/#ve-sunny', 'Về Sunny', 've-sunny'],
-        ['/#co-so', 'Cơ sở', 'co-so'],
+        ['/sunny-world', 'Sunny World', 'sunny-world'],
         ['/bai-viet', 'Bài viết', 'bai-viet'],
         ['/#lien-he', 'Liên hệ', 'lien-he'],
     ];
@@ -83,7 +83,8 @@ function site_header(string $active = ''): void
       <?php foreach ($links as [$href, $label, $key]): ?>
         <a class="link" href="<?= e(url($href)) ?>"<?= $active === $key ? ' aria-current="page"' : '' ?>><?= e($label) ?></a>
       <?php endforeach; ?>
-      <a class="btn btn-sm" href="<?= e(url('/#dang-ky')) ?>">Đặt lịch học thử cho con</a>
+      <?php [$bookHref, $bookAttr] = booking_link(); ?>
+      <a class="btn btn-sm" href="<?= e($bookHref) ?>"<?= $bookAttr ?>>Đặt lịch học thử cho con</a>
     </nav>
   </div>
 </header>
@@ -148,26 +149,35 @@ function risk_note(string $text, string $align = 'center'): string
     return '<p class="risk-note"' . ($align === 'inherit' ? '' : ' style="text-align:' . e($align) . '"') . '>' . e($text) . '</p>';
 }
 
-/** Khối liên hệ nhanh (luật 5): Zalo + số điện thoại nổi nhất, "Xem đường đến lớp" là nút phụ. */
+/** Nơi đặt lịch học thử: nhắn Zalo nếu có, không thì gọi điện. Trả [href, thuộc tính HTML thêm]. */
+function booking_link(): array
+{
+    $c = sunny_contact();
+    if ($c['zaloUrl']) {
+        return [$c['zaloUrl'], ' target="_blank" rel="noopener"'];
+    }
+    return [$c['tel'] !== '' ? $c['tel'] : url('/#lien-he'), ''];
+}
+
+/** Nút chính "đặt lịch học thử": mở Zalo của trung tâm (website không thu thập thông tin). */
+function contact_cta(string $label, string $extraClass = 'btn-lg btn-block'): string
+{
+    [$href, $attr] = booking_link();
+    return '<a class="btn ' . e($extraClass) . ' btn-book" href="' . e($href) . '"' . $attr . '>' . icon('message-circle') . '<span>' . e($label) . '</span></a>';
+}
+
+/** Hàng nút phụ (luật 5): gọi điện + "Xem đường đến lớp". */
 function nearby_actions(): string
 {
     $c = sunny_contact();
-    $h = '<div class="contact-stack">';
-    if ($c['zaloUrl']) {
-        $h .= '<a class="btn btn-secondary btn-block btn-zalo" href="' . e($c['zaloUrl']) . '" target="_blank" rel="noopener">'
-            . icon('message-circle') . '<span class="zl-text"><span class="zl-main">Nhắn Zalo tư vấn</span><span class="zl-num">' . e($c['zalo']) . '</span></span></a>';
-    }
     $row = '';
     if ($c['tel']) {
-        $row .= '<a class="btn btn-outline btn-block only-mobile" href="' . e($c['tel']) . '">' . icon('phone') . 'Gọi ngay</a>';
+        $row .= '<a class="btn btn-outline btn-block" href="' . e($c['tel']) . '">' . icon('phone') . 'Gọi ' . e($c['phone']) . '</a>';
     }
     if ($c['maps']) {
         $row .= '<a class="btn btn-outline btn-block btn-map" href="' . e($c['maps']) . '" target="_blank" rel="noopener">' . icon('map-pin') . 'Xem đường đến lớp</a>';
     }
-    if ($row !== '') {
-        $h .= '<div class="contact-row">' . $row . '</div>';
-    }
-    return $h . '</div>';
+    return $row !== '' ? '<div class="contact-stack"><div class="contact-row">' . $row . '</div></div>' : '';
 }
 
 /** Lấy các bài đã đăng, mới nhất trước. */
