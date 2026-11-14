@@ -17,7 +17,7 @@ function sw_not_found(): never
     http_response_code(404);
     sw_head(['title' => 'Không tìm thấy', 'noindex' => true, 'path' => '/sunny-world']);
     sw_topbar(sw_url(), 'Bản đồ');
-    echo '<main class="sw-main"><div class="sw-empty"><h1 class="sw-h1">Ôi, con đi lạc rồi!</h1><p>Trang này không có trong Sunny World.</p><a class="btn btn-lg" href="' . e(sw_url()) . '">Về bản đồ</a></div></main>';
+    echo '<main class="sw-main"><div class="sw-empty">' . sw_sunny('oops', 'Sunny hơi lo lắng') . '<h1 class="sw-h1">Ôi, con đi lạc rồi!</h1><p>Trang này không có trong Sunny World.</p><a class="btn btn-lg" href="' . e(sw_url()) . '">Về bản đồ</a></div></main>';
     sw_foot();
     exit;
 }
@@ -29,8 +29,8 @@ if ($view === '') {
     ?>
 <main class="sw-main">
   <div class="sw-hello">
-    <h1 class="sw-h1">Chào mừng con đến Sunny World!</h1>
-    <p class="sw-sub">Bấm vào một ngôi nhà để bắt đầu khám phá.</p>
+    <h1 class="sw-h1">Chào bé đến Sunny World!</h1>
+    <p class="sw-sub">Chọn một ngôi nhà để bắt đầu khám phá.</p>
   </div>
   <div class="sw-mapbox"><?= sw_map() ?></div>
   <nav class="sw-tiles" aria-label="Các khu trong Sunny World">
@@ -65,7 +65,7 @@ if ($view === 'tu-vung' && $slug === '') {
     <p class="sw-sub">Chọn một chủ đề, lật thẻ để học từ mới nhé!</p>
   </div>
   <?php if (!$topics): ?>
-    <div class="sw-empty"><p>Vườn chưa có chủ đề nào. Con quay lại sau nhé!</p></div>
+    <div class="sw-empty"><?= sw_sunny('think', 'Sunny đang suy nghĩ') ?><p>Vườn chưa có chủ đề nào. Con quay lại sau nhé!</p></div>
   <?php else: ?>
   <div class="tp-grid">
     <?php foreach ($topics as $t): if ((int) $t['n'] === 0) { continue; } ?>
@@ -116,11 +116,11 @@ if ($view === 'tu-vung') {
     <button class="fc-nav" type="button" id="fc-next" aria-label="Thẻ sau"><?= icon('chevron-right') ?></button>
   </div>
   <div class="fc-bar">
-    <button class="btn btn-outline tts" type="button" id="fc-say"><?= icon('volume-2') ?>Nghe</button>
+    <button class="btn btn-sky tts" type="button" id="fc-say"><?= icon('volume-2') ?>Nghe</button>
     <span class="fc-count" id="fc-count" aria-live="polite"></span>
     <button class="btn" type="button" id="fc-known"><?= icon('star') ?><span>Con thuộc rồi!</span></button>
   </div>
-  <p class="fc-done" id="fc-done" hidden><?= icon('party-popper') ?> Giỏi quá! Con đã thuộc hết các từ của chủ đề này.</p>
+  <div class="fc-done" id="fc-done" hidden><?= sw_sunny('cheer', 'Sunny vui mừng') ?><p>Giỏi quá! Con đã thuộc hết các từ của chủ đề này.</p></div>
   <div class="fc-grid" id="fc-grid" aria-label="Tất cả các thẻ">
     <?php foreach ($cards as $i => $c): ?>
       <button class="fc-thumb" type="button" data-i="<?= $i ?>" data-id="<?= (int) $c['id'] ?>"><span class="pic"><?= sw_picture($c, $c['word']) ?></span><span class="t"><?= e($c['word']) ?></span></button>
@@ -154,7 +154,7 @@ if ($view === 'truyen' && $slug === '') {
     <?php endforeach; ?>
   </div>
   <?php if (!$stories): ?>
-    <div class="sw-empty"><p>Kệ này chưa có truyện. Con chọn kệ khác nhé!</p></div>
+    <div class="sw-empty"><?= sw_sunny('think', 'Sunny đang suy nghĩ') ?><p>Kệ này chưa có truyện. Con chọn kệ khác nhé!</p></div>
   <?php else: ?>
   <div class="shelf">
     <?php foreach ($stories as $s): $n = count(sw_story_pages($s)); ?>
@@ -185,9 +185,10 @@ if ($view === 'truyen') {
     $total = count($pages);
     ?>
 <main class="sw-main">
+  <div class="reader">
+  <div class="rd-pic<?= (string) ($story['image'] ?? '') !== '' ? ' has-img' : '' ?>" aria-hidden="true"><?= sw_scene((string) ($story['art'] ?? '') !== 'sun') ?><div class="rd-art"><?= sw_picture($story, $story['title']) ?></div></div>
   <div class="book" id="reader" data-story="<?= (int) $story['id'] ?>" data-pages="<?= $total ?>">
     <section class="pg pg-cover" data-pg="0" style="--bg:<?= e(sw_clean_color($story['color'])) ?>">
-      <div class="cover-art"><?= sw_picture($story, $story['title']) ?></div>
       <h1 class="cover-t"><?= e($story['title']) ?></h1>
       <p class="cover-vi"><?= e($story['title_vi']) ?></p>
       <button class="btn btn-lg" type="button" data-go="1"><?= icon('play') ?>Bắt đầu đọc</button>
@@ -199,7 +200,8 @@ if ($view === 'truyen') {
       </section>
     <?php endforeach; ?>
     <section class="pg pg-end" data-pg="<?= $total + 1 ?>" hidden>
-      <h2 class="end-t"><?= icon('party-popper') ?> Con đọc xong rồi!</h2>
+      <?= sw_sunny('cheer', 'Sunny vui mừng') ?>
+      <h2 class="end-t">Con đọc xong rồi!</h2>
       <p class="end-star" id="end-star"></p>
       <?php if ($gloss): ?>
         <h3 class="end-h">Từ mới trong truyện</h3>
@@ -213,9 +215,10 @@ if ($view === 'truyen') {
       </div>
     </section>
   </div>
+  </div>
   <div class="rd-bar" id="rd-bar">
     <button class="btn btn-outline" type="button" id="rd-prev" aria-label="Trang trước"><?= icon('chevron-left') ?></button>
-    <button class="btn btn-outline tts" type="button" id="rd-say"><?= icon('volume-2') ?><span>Nghe đọc</span></button>
+    <button class="btn btn-sky tts" type="button" id="rd-say"><?= icon('volume-2') ?><span>Nghe đọc</span></button>
     <span class="rd-count" id="rd-count" aria-live="polite"></span>
     <button class="btn btn-outline" type="button" id="rd-vi" aria-pressed="false"><?= icon('languages') ?><span>Xem nghĩa</span></button>
     <button class="btn" type="button" id="rd-next" aria-label="Trang sau"><?= icon('chevron-right') ?></button>

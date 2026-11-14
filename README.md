@@ -3,7 +3,7 @@
 Landing page quảng cáo trung tâm ngoại ngữ **Sunny** (bé 3–14 tuổi), gồm:
 
 - **Trang chủ** dựng theo *Sunny Education Design System*: **linh vật mặt trời có hoạt hình** (mắt nhìn theo chuột, bấm để chào), 4 cảnh minh hoạ động, khoá học, giới thiệu Sunny World, **băng chuyền ảnh cơ sở vật chất** tự chạy, bài viết mới. Phụ huynh **đặt lịch học thử qua Zalo** (website không thu thập thông tin), có nút gọi điện và nút Zalo nổi.
-- **Sunny World** (`/sunny-world`): khu dành cho bé, không cần tài khoản. Bản đồ thế giới hoạt hình, **Vườn Từ vựng** (thẻ từ lật theo chủ đề, nghe phát âm), **Thư viện Truyện** (truyện tiếng Anh, rê chuột hoặc chạm vào từng từ để xem nghĩa), **Góc ba mẹ** (xem tiến độ của con). Tiến độ lưu trên máy của bé. Nhà Trò chơi, Trạm Khoa học, Rạp phim đang ở trạng thái "Sắp mở".
+- **Sunny World** (`/sunny-world`): khu dành cho bé, không cần tài khoản. Bản đồ thế giới trên mây vẽ kiểu kawaii (4 ngôi nhà, linh vật Sunny), **Vườn Từ vựng** (thẻ từ lật theo chủ đề, nghe phát âm), **Thư viện Truyện** (truyện tiếng Anh, rê chuột hoặc chạm vào từng từ để xem nghĩa), **Góc ba mẹ** (xem tiến độ của con). Tiến độ lưu trên máy của bé. Nhà Trò chơi và Trạm Khoa học đang ở trạng thái "Sắp mở".
 - **Blog** (`/bai-viet`): admin đăng bài, khách đọc, có ảnh bìa, tóm tắt, SEO/OG, sitemap.
 - **Trang quản trị** (`/admin`): soạn bài (đậm/nghiêng, tiêu đề, danh sách, liên kết, **nhiều ảnh một lúc, kéo thả, lưới ảnh**), nháp / đăng / hẹn giờ; **quản lý khoá học**; **Từ vựng** (chủ đề và thẻ từ của Sunny World); **Truyện** (nội dung từng trang, từ mới, từ điển chung).
 
